@@ -21,12 +21,12 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th style="width: 50px">ID</th>
                             <th>Ad Soyad</th>
                             <th>Email</th>
                             <th>Rol</th>
                             <th>Kayıt Tarihi</th>
-                            <th>İşlemler</th>
+                            <th style="width: 200px">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,19 +35,27 @@
                                 <td>{{ $user->id }}</td>
                                 <td>{{ $user->full_name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td>{{ $user->role === 'admin' ? 'Yönetici' : 'Kullanıcı' }}</td>
+                                <td>
+                                    @if($user->role === 'admin')
+                                        <span class="badge bg-danger">Yönetici</span>
+                                    @else
+                                        <span class="badge bg-info">Kullanıcı</span>
+                                    @endif
+                                </td>
                                 <td>{{ $user->created_at->format('d.m.Y') }}</td>
                                 <td>
-                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-edit"></i> Düzenle
-                                    </a>
-                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')">
-                                            <i class="fas fa-trash"></i> Sil
-                                        </button>
-                                    </form>
+                                    <div class="btn-group gap-1" role="group">
+                                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-info" title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')" title="Sil">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
