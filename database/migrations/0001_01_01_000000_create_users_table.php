@@ -18,6 +18,12 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['admin', 'user'])->default('user');
+            $table->string('default_shipping_name')->nullable();
+            $table->string('default_shipping_surname')->nullable();
+            $table->string('default_shipping_phone')->nullable();
+            $table->string('default_city')->nullable();
+            $table->string('default_district')->nullable();
+            $table->text('default_address')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

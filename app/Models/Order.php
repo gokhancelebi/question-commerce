@@ -13,6 +13,10 @@ class Order extends Model
         'user_id',
         'total_amount',
         'status',
+        'shipping_name',
+        'shipping_surname',
+        'shipping_phone',
+        'shipping_email',
         'city',
         'district',
         'address'
@@ -41,5 +45,49 @@ class Order extends Model
             'cancelled' => '<span class="badge badge-danger">İptal Edildi</span>',
             default => '<span class="badge badge-secondary">Bilinmiyor</span>',
         };
+    }
+
+    /**
+     * Fill shipping information from user's default shipping info
+     */
+    public function fillShippingFromUser(User $user): self
+    {
+        $this->fill($user->getDefaultShippingInfo());
+        return $this;
+    }
+
+    /**
+     * Add a product to the order
+     */
+    public function addItem(Product $product, int $quantity = 1): OrderItem
+    {
+        return $this->items()->create([
+            'product_id' => $product->id,
+            'quantity' => $quantity,
+            'price' => $product->price
+        ]);
+    }
+
+    /**
+     * Update order total amount based on items
+     */
+    public function updateTotal(): self
+    {
+        $this->total_amount = $this->items->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
+        $this->save();
+        
+        return $this;
+    }
+
+    /**
+     * Get order items total
+     */
+    public function getItemsTotalAttribute(): float
+    {
+        return $this->items->sum(function ($item) {
+            return $item->price * $item->quantity;
+        });
     }
 }

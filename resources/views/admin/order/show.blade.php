@@ -71,12 +71,28 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Teslimat Adresi</h3>
+                        <h3 class="card-title">Teslimat Bilgileri</h3>
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered">
                             <tr>
-                                <th style="width: 200px">Şehir</th>
+                                <th style="width: 200px">Ad</th>
+                                <td>{{ $order->shipping_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Soyad</th>
+                                <td>{{ $order->shipping_surname }}</td>
+                            </tr>
+                            <tr>
+                                <th>Telefon</th>
+                                <td>{{ $order->shipping_phone }}</td>
+                            </tr>
+                            <tr>
+                                <th>E-posta</th>
+                                <td>{{ $order->shipping_email }}</td>
+                            </tr>
+                            <tr>
+                                <th>Şehir</th>
                                 <td>{{ $order->city }}</td>
                             </tr>
                             <tr>

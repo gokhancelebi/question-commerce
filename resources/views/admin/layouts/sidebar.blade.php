@@ -35,7 +35,7 @@
 
                 <!-- Orders -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('admin.orders.index') }}" class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-shopping-cart"></i>
                         <p>Siparişler</p>
                     </a>
