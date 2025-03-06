@@ -44,18 +44,16 @@
                                 </td>
                                 <td>{{ $user->created_at->format('d.m.Y') }}</td>
                                 <td>
-                                    <div class="btn-group gap-1" role="group">
-                                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-info" title="Düzenle">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')" title="Sil">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-info me-1" title="Düzenle">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach
