@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->decimal('total_amount', 10, 2);
-            $table->string('status')->default('pending');
+            $table->enum('status', ['pending', 'processing', 'completed', 'cancelled'])->default('pending');
             $table->string('shipping_name');
             $table->string('shipping_surname');
             $table->string('shipping_phone');

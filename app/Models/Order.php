@@ -9,6 +9,26 @@ class Order extends Model
 {
     use SoftDeletes;
 
+    /**
+     * Order status constants
+     */
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_PROCESSING = 'processing';
+    public const STATUS_COMPLETED = 'completed';
+    public const STATUS_CANCELLED = 'cancelled';
+
+    /**
+     * Available order statuses
+     *
+     * @var array<string, string>
+     */
+    public const STATUSES = [
+        self::STATUS_PENDING => 'Bekliyor',
+        self::STATUS_PROCESSING => 'İşleniyor',
+        self::STATUS_COMPLETED => 'Tamamlandı',
+        self::STATUS_CANCELLED => 'İptal Edildi',
+    ];
+
     protected $fillable = [
         'user_id',
         'total_amount',
@@ -39,12 +59,67 @@ class Order extends Model
     public function getStatusBadgeAttribute()
     {
         return match($this->status) {
-            'pending' => '<span class="badge badge-warning">Bekliyor</span>',
-            'processing' => '<span class="badge badge-info">İşleniyor</span>',
-            'completed' => '<span class="badge badge-success">Tamamlandı</span>',
-            'cancelled' => '<span class="badge badge-danger">İptal Edildi</span>',
+            self::STATUS_PENDING => '<span class="badge badge-warning">Bekliyor</span>',
+            self::STATUS_PROCESSING => '<span class="badge badge-info">İşleniyor</span>',
+            self::STATUS_COMPLETED => '<span class="badge badge-success">Tamamlandı</span>',
+            self::STATUS_CANCELLED => '<span class="badge badge-danger">İptal Edildi</span>',
             default => '<span class="badge badge-secondary">Bilinmiyor</span>',
         };
+    }
+
+    /**
+     * Get status label
+     */
+    public function getStatusLabelAttribute(): string
+    {
+        return self::STATUSES[$this->status] ?? 'Bilinmiyor';
+    }
+
+    /**
+     * Check if order is pending
+     */
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    /**
+     * Check if order is processing
+     */
+    public function isProcessing(): bool
+    {
+        return $this->status === self::STATUS_PROCESSING;
+    }
+
+    /**
+     * Check if order is completed
+     */
+    public function isCompleted(): bool
+    {
+        return $this->status === self::STATUS_COMPLETED;
+    }
+
+    /**
+     * Check if order is cancelled
+     */
+    public function isCancelled(): bool
+    {
+        return $this->status === self::STATUS_CANCELLED;
+    }
+
+    /**
+     * Update order status
+     */
+    public function updateStatus(string $status): self
+    {
+        if (!array_key_exists($status, self::STATUSES)) {
+            throw new \InvalidArgumentException('Invalid order status');
+        }
+
+        $this->status = $status;
+        $this->save();
+
+        return $this;
     }
 
     /**
