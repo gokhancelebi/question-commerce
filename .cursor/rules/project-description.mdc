@@ -1,0 +1,21 @@
+---
+description: Project description and structure rules
+globs: 
+alwaysApply: false
+---
+# Project Short Description
+- It is a simple product based e-commerce website with a credit cart payment, cart(sepet) functionality,
+- There is a two type of user, one of them is admin one of them is customer
+- Admin should be able to access admin panel, user should be able to only see front pages and purchase items
+- website and admin panel will be turkish
+# Admin related routes
+- admin related routes have admin prefix and admin. name prefix and all should be placed in [admin_routes.php](mdc:routes/admin_routes.php)
+- Admin panel should be build with AdminLTE 3.2 free and open source template, you can use CDN to include it.
+- Admin panel has Dashboard, Products, Orders, Users, Contact , website settings (meta description, title, credit cart details,) and Logout menu items.
+- Admin template examples are in [index.html](mdc:AdminLTE-3.2.0/index.html) this folder.
+- some example templates for admin , [login.html](mdc:AdminLTE-3.2.0/pages/examples/login.html), [advanced.html](mdc:AdminLTE-3.2.0/pages/forms/advanced.html), [general.html](mdc:AdminLTE-3.2.0/pages/UI/general.html) [simple.html](mdc:AdminLTE-3.2.0/pages/tables/simple.html) [buttons.html](mdc:AdminLTE-3.2.0/pages/UI/buttons.html) [general.html](mdc:AdminLTE-3.2.0/pages/UI/general.html) [modals.html](mdc:AdminLTE-3.2.0/pages/UI/modals.html) [navbar.html](mdc:AdminLTE-3.2.0/pages/UI/navbar.html) [sidebar.html](mdc:AdminLTE-3.2.0/docs/_includes/sidebar.html) [general.html](mdc:AdminLTE-3.2.0/pages/forms/general.html) [general.html](mdc:AdminLTE-3.2.0/pages/UI/general.html) [editors.html](mdc:AdminLTE-3.2.0/pages/forms/editors.html) [validation.html](mdc:AdminLTE-3.2.0/pages/forms/validation.html)  [404.html](mdc:AdminLTE-3.2.0/docs/404.html) [invoice.html](mdc:AdminLTE-3.2.0/pages/examples/invoice.html) [contacts.html](mdc:AdminLTE-3.2.0/pages/examples/contacts.html) [projects.html](mdc:AdminLTE-3.2.0/pages/examples/projects.html) [faq.html](mdc:AdminLTE-3.2.0/pages/examples/faq.html) [e-commerce.html](mdc:AdminLTE-3.2.0/pages/examples/e-commerce.html)
+- all index listing templates should be using [simple.html](mdc:AdminLTE-3.2.0/pages/tables/simple.html) with blade based pagination
+- Products will have title, description, featured image, gallery images, price, quantity
+- Orders will have order items, order total, shipping informations , 
+- Shipping informations will be text fields, Şehir, İlçe, Tam adres
+- one order can have multiple order items
