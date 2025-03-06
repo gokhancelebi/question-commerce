@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -12,7 +14,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $products = Product::latest()->paginate(10);
+        return view('admin.product.index', compact('products'));
     }
 
     /**
@@ -20,7 +23,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.product.create');
     }
 
     /**
@@ -28,7 +31,35 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'nullable',
+            'price' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:0',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active' => 'boolean'
+        ]);
+
+        if ($request->hasFile('featured_image')) {
+            $path = $request->file('featured_image')->store('products', 'public');
+            $validated['featured_image'] = $path;
+        }
+
+        $product = Product::create($validated);
+
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $index => $image) {
+                $path = $image->store('products/gallery', 'public');
+                $product->images()->create([
+                    'image_path' => $path,
+                    'sort_order' => $index
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Ürün başarıyla oluşturuldu.');
     }
 
     /**
@@ -42,24 +73,66 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Product $product)
     {
-        //
+        return view('admin.product.edit', compact('product'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Product $product)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'nullable',
+            'price' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:0',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active' => 'boolean'
+        ]);
+
+        if ($request->hasFile('featured_image')) {
+            if ($product->featured_image) {
+                Storage::disk('public')->delete($product->featured_image);
+            }
+            $path = $request->file('featured_image')->store('products', 'public');
+            $validated['featured_image'] = $path;
+        }
+
+        $product->update($validated);
+
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $index => $image) {
+                $path = $image->store('products/gallery', 'public');
+                $product->images()->create([
+                    'image_path' => $path,
+                    'sort_order' => $product->images()->count() + $index
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Ürün başarıyla güncellendi.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Product $product)
     {
-        //
+        if ($product->featured_image) {
+            Storage::disk('public')->delete($product->featured_image);
+        }
+        
+        foreach ($product->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+        
+        $product->delete();
+
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Ürün başarıyla silindi.');
     }
 }

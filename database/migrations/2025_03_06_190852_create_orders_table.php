@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->decimal('total_amount', 10, 2);
+            $table->string('status')->default('pending');
+            $table->string('city');
+            $table->string('district');
+            $table->text('address');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
