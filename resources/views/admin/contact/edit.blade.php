@@ -32,14 +32,35 @@
                                 <th style="width: 200px">Tarih</th>
                                 <td>{{ $contact->created_at->format('d.m.Y H:i') }}</td>
                             </tr>
-                            <tr>
-                                <th>Ad Soyad</th>
-                                <td>{{ $contact->name }}</td>
-                            </tr>
-                            <tr>
-                                <th>E-posta</th>
-                                <td>{{ $contact->email }}</td>
-                            </tr>
+                            @if($contact->user_id)
+                                <tr>
+                                    <th>Üyelik Durumu</th>
+                                    <td>
+                                        <span class="badge badge-success">Kayıtlı Üye</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Üye Bilgileri</th>
+                                    <td>
+                                        <strong>Ad Soyad:</strong> {{ $contact->user->getFullNameAttribute() }}<br>
+                                        <strong>E-posta:</strong> {{ $contact->user->email }}<br>
+                                        @if($contact->user->hasDefaultShippingInfo())
+                                            <strong>Telefon:</strong> {{ $contact->user->default_shipping_phone }}<br>
+                                            <strong>Adres:</strong> {{ $contact->user->default_address }}<br>
+                                            <strong>İlçe/İl:</strong> {{ $contact->user->default_district }}/{{ $contact->user->default_city }}
+                                        @endif
+                                    </td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <th>Ad Soyad</th>
+                                    <td>{{ $contact->name }} {{ $contact->surname }}</td>
+                                </tr>
+                                <tr>
+                                    <th>E-posta</th>
+                                    <td>{{ $contact->email }}</td>
+                                </tr>
+                            @endif
                             <tr>
                                 <th>Konu</th>
                                 <td>{{ $contact->subject }}</td>
@@ -61,31 +82,40 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Yanıt</h3>
+                        @if($contact->status === 'replied')
+                            <span class="badge badge-success float-right">Yanıtlandı</span>
+                        @endif
                     </div>
-                    <form action="{{ route('admin.contacts.update', $contact) }}" method="POST">
-                        @csrf
-                        @method('PUT')
+                    @if($contact->reply)
                         <div class="card-body">
-                            @if($contact->reply)
-                                <div class="alert alert-info">
-                                    <strong>Yanıt Tarihi:</strong> {{ $contact->replied_at->format('d.m.Y H:i') }}
-                                </div>
-                            @endif
-
+                            <div class="alert alert-info">
+                                <strong>Yanıt Tarihi:</strong> {{ $contact->replied_at->format('d.m.Y H:i') }}
+                            </div>
                             <div class="form-group">
-                                <label for="reply">Yanıt Metni</label>
-                                <textarea name="reply" id="reply" rows="5" class="form-control @error('reply') is-invalid @enderror">{{ old('reply', $contact->reply) }}</textarea>
-                                @error('reply')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <label>Yanıt Metni</label>
+                                <div class="p-3 bg-light rounded">{{ $contact->reply }}</div>
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-paper-plane"></i> Yanıtla
-                            </button>
-                        </div>
-                    </form>
+                    @else
+                        <form action="{{ route('admin.contacts.update', $contact) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="reply">Yanıt Metni</label>
+                                    <textarea name="reply" id="reply" rows="5" class="form-control @error('reply') is-invalid @enderror">{{ old('reply') }}</textarea>
+                                    @error('reply')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> Yanıtla
+                                </button>
+                            </div>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>

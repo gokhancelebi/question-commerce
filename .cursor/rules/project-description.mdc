@@ -5,6 +5,8 @@ alwaysApply: false
 ---
 when you make some changes dont remove any existing proved feature without asking
 
+everytime when you change anything related to migration files ask for php artisan migrate:fresh --seed command
+
 # Project Short Description
 - It is a simple product based e-commerce website with a credit cart payment, cart(sepet) functionality,
 - There is a two type of user, one of them is admin one of them is customer

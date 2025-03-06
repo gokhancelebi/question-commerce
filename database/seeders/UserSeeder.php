@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
         // Create admin user
         User::create([
             'name' => 'Admin',
+            'surname' => 'User',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
@@ -25,7 +26,8 @@ class UserSeeder extends Seeder
         // Create regular users with shipping info
         $users = [
             [
-                'name' => 'Ahmet Yılmaz',
+                'name' => 'Ahmet',
+                'surname' => 'Yılmaz',
                 'email' => 'ahmet@example.com',
                 'default_shipping_name' => 'Ahmet',
                 'default_shipping_surname' => 'Yılmaz',
@@ -35,7 +37,8 @@ class UserSeeder extends Seeder
                 'default_address' => 'Bağdat Caddesi No:123',
             ],
             [
-                'name' => 'Ayşe Demir',
+                'name' => 'Ayşe',
+                'surname' => 'Demir',
                 'email' => 'ayse@example.com',
                 'default_shipping_name' => 'Ayşe',
                 'default_shipping_surname' => 'Demir',
@@ -45,7 +48,8 @@ class UserSeeder extends Seeder
                 'default_address' => 'Barbaros Bulvarı No:456',
             ],
             [
-                'name' => 'Mehmet Kaya',
+                'name' => 'Mehmet',
+                'surname' => 'Kaya',
                 'email' => 'mehmet@example.com',
                 'default_shipping_name' => 'Mehmet',
                 'default_shipping_surname' => 'Kaya',

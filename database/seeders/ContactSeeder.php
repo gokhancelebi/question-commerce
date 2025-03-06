@@ -14,26 +14,30 @@ class ContactSeeder extends Seeder
     {
         $contacts = [
             [
-                'name' => 'Ahmet Yılmaz',
-                'email' => 'ahmet.yilmaz@example.com',
+                'user_id' => 2, // Ahmet Yılmaz
+                'name' => 'Ahmet',
+                'surname' => 'Yılmaz',
+                'email' => 'ahmet@example.com',
                 'subject' => 'Ürün Bilgi Talebi',
                 'message' => 'Merhaba, X model ürününüz hakkında detaylı bilgi almak istiyorum. Stok durumu ve fiyat bilgisi paylaşabilir misiniz?',
                 'status' => 'pending',
                 'created_at' => now()->subDays(5),
             ],
             [
-                'name' => 'Ayşe Demir',
-                'email' => 'ayse.demir@example.com',
+                'user_id' => 3, // Ayşe Demir
+                'name' => 'Ayşe',
+                'surname' => 'Demir',
+                'email' => 'ayse@example.com',
                 'subject' => 'Sipariş Durumu',
                 'message' => 'Geçen hafta verdiğim siparişin durumunu öğrenebilir miyim? Sipariş numaram: #12345',
-                'status' => 'replied',
-                'reply' => 'Merhaba Ayşe Hanım, siparişiniz yarın teslim edilecektir. İyi günler dileriz.',
-                'replied_at' => now()->subDays(2),
+                'status' => 'read',
                 'created_at' => now()->subDays(3),
             ],
             [
-                'name' => 'Mehmet Kaya',
-                'email' => 'mehmet.kaya@example.com',
+                'user_id' => 4, // Mehmet Kaya
+                'name' => 'Mehmet',
+                'surname' => 'Kaya',
+                'email' => 'mehmet@example.com',
                 'subject' => 'Teknik Destek',
                 'message' => 'Web sitenizde ödeme yaparken hata alıyorum. Kredi kartı ile ödeme seçeneğinde işlem tamamlanmıyor.',
                 'status' => 'replied',
@@ -42,7 +46,8 @@ class ContactSeeder extends Seeder
                 'created_at' => now()->subDay(),
             ],
             [
-                'name' => 'Zeynep Şahin',
+                'name' => 'Zeynep',
+                'surname' => 'Şahin',
                 'email' => 'zeynep.sahin@example.com',
                 'subject' => 'İade Talebi',
                 'message' => 'Aldığım ürünü iade etmek istiyorum. Ürün beklediğim gibi çıkmadı. İade sürecini nasıl başlatabilirim?',
@@ -50,7 +55,8 @@ class ContactSeeder extends Seeder
                 'created_at' => now()->subHours(6),
             ],
             [
-                'name' => 'Can Öztürk',
+                'name' => 'Can',
+                'surname' => 'Öztürk',
                 'email' => 'can.ozturk@example.com',
                 'subject' => 'Teşekkür Mesajı',
                 'message' => 'Hızlı teslimat ve kaliteli ürün için teşekkür ederim. Çok memnun kaldım.',
