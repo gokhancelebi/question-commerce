@@ -19,13 +19,13 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>0</h3>
+                        <h3>{{ $stats['new_orders'] }}</h3>
                         <p>Yeni Siparişler</p>
                     </div>
                     <div class="icon">
                         <i class="fas fa-shopping-cart"></i>
                     </div>
-                    <a href="#" class="small-box-footer">
+                    <a href="{{ route('admin.orders.index') }}" class="small-box-footer">
                         Detaylar <i class="fas fa-arrow-circle-right"></i>
                     </a>
                 </div>
@@ -34,7 +34,7 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>0</h3>
+                        <h3>{{ $stats['total_products'] }}</h3>
                         <p>Toplam Ürün</p>
                     </div>
                     <div class="icon">
@@ -49,7 +49,7 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>0</h3>
+                        <h3>{{ $stats['total_users'] }}</h3>
                         <p>Kullanıcılar</p>
                     </div>
                     <div class="icon">
@@ -64,7 +64,7 @@
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>0</h3>
+                        <h3>{{ $stats['pending_contacts'] }}</h3>
                         <p>Bekleyen İletişim</p>
                     </div>
                     <div class="icon">
@@ -94,9 +94,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td colspan="4" class="text-center">Henüz sipariş bulunmuyor.</td>
-                                </tr>
+                                @forelse($recent_orders as $order)
+                                    <tr>
+                                        <td>
+                                            <a href="{{ route('admin.orders.show', $order) }}">
+                                                #{{ $order->id }}
+                                            </a>
+                                        </td>
+                                        <td>{{ $order->user->name }}</td>
+                                        <td>{{ number_format($order->total_amount, 2) }} ₺</td>
+                                        <td>{!! $order->status_badge !!}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center">Henüz sipariş bulunmuyor.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -118,9 +131,21 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td colspan="3" class="text-center">Henüz ürün bulunmuyor.</td>
-                                </tr>
+                                @forelse($recent_products as $product)
+                                    <tr>
+                                        <td>
+                                            <a href="{{ route('admin.products.edit', $product) }}">
+                                                {{ $product->title }}
+                                            </a>
+                                        </td>
+                                        <td>{{ number_format($product->price, 2) }} ₺</td>
+                                        <td>{{ $product->quantity }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center">Henüz ürün bulunmuyor.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

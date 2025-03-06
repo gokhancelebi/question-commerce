@@ -19,6 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'surname',
         'email',
         'password',
         'role',
@@ -54,6 +55,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get user's full name
+     */
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->name} {$this->surname}";
+    }
+
+    /**
      * Get default shipping information as array
      *
      * @return array<string, string|null>
@@ -62,7 +71,7 @@ class User extends Authenticatable
     {
         return [
             'shipping_name' => $this->default_shipping_name ?? $this->name,
-            'shipping_surname' => $this->default_shipping_surname ?? '',
+            'shipping_surname' => $this->default_shipping_surname ?? $this->surname,
             'shipping_phone' => $this->default_shipping_phone ?? '',
             'shipping_email' => $this->email,
             'city' => $this->default_city ?? '',

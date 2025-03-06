@@ -19,6 +19,10 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->timestamps();
             $table->softDeletes();
+
+            // Add indexes for better performance
+            $table->index(['order_id', 'product_id']);
+            $table->index('created_at');
         });
     }
 

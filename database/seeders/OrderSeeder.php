@@ -22,14 +22,14 @@ class OrderSeeder extends Seeder
             $orderCount = rand(1, 3);
             
             for ($i = 0; $i < $orderCount; $i++) {
-                $order = Order::create([
-                    'user_id' => $user->id,
-                    'total_amount' => 0,
-                    'status' => collect(['pending', 'processing', 'completed'])->random(),
-                ]);
-
-                // Fill shipping info from user
-                $order->fillShippingFromUser($user);
+                // Get shipping info from user
+                $shippingInfo = $user->getDefaultShippingInfo();
+                
+                $order = new Order();
+                $order->user_id = $user->id;
+                $order->total_amount = 0;
+                $order->status = collect(['pending', 'processing', 'completed'])->random();
+                $order->fill($shippingInfo);
                 $order->save();
 
                 // Add 1-5 random products to order

@@ -27,13 +27,26 @@
             <form action="{{ route('register') }}" method="post">
                 @csrf
                 <div class="input-group mb-3">
-                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Ad Soyad" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Ad" value="{{ old('name') }}" required autocomplete="given-name" autofocus>
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-user"></span>
                         </div>
                     </div>
                     @error('name')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" name="surname" class="form-control @error('surname') is-invalid @enderror" placeholder="Soyad" value="{{ old('surname') }}" required autocomplete="family-name">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
+                    @error('surname')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>

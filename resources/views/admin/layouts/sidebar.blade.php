@@ -51,7 +51,7 @@
 
                 <!-- Contact -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('admin.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-envelope"></i>
                         <p>İletişim</p>
                     </a>

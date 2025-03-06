@@ -13,7 +13,17 @@ return new class extends Migration
     {
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('name');
+            $table->string('surname');
+            $table->string('email');
+            $table->string('subject');
+            $table->text('message');
+            $table->enum('status', ['pending', 'read', 'replied'])->default('pending');
+            $table->text('reply')->nullable();
+            $table->timestamp('replied_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
