@@ -30,7 +30,7 @@
                                 <td>{{ $product->id }}</td>
                                 <td>
                                     @if($product->featured_image)
-                                        <img src="{{ asset('storage/' . $product->featured_image) }}" alt="{{ $product->title }}" class="img-thumbnail" style="max-width: 50px;">
+                                        <img src="{{ asset($product->featured_image) }}" alt="{{ $product->title }}" class="img-thumbnail" style="max-width: 50px;">
                                     @else
                                         <div class="text-muted">Resim yok</div>
                                     @endif

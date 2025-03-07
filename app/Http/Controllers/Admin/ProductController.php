@@ -23,7 +23,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('admin.product.create');
+        $product = new Product();
+        return view('admin.product.edit', compact('product'));
     }
 
     /**
@@ -42,17 +43,20 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('featured_image')) {
-            $path = $request->file('featured_image')->store('products', 'public');
-            $validated['featured_image'] = $path;
+            $file = $request->file('featured_image');
+            $filename = 'product_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/products'), $filename);
+            $validated['featured_image'] = 'uploads/products/' . $filename;
         }
 
         $product = Product::create($validated);
 
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $index => $image) {
-                $path = $image->store('products/gallery', 'public');
+                $filename = 'gallery_' . time() . '_' . uniqid() . '_' . $index . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/products/gallery'), $filename);
                 $product->images()->create([
-                    'image_path' => $path,
+                    'image_path' => 'uploads/products/gallery/' . $filename,
                     'sort_order' => $index
                 ]);
             }
@@ -94,20 +98,25 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('featured_image')) {
-            if ($product->featured_image) {
-                Storage::disk('public')->delete($product->featured_image);
+            // Delete old image if exists
+            if ($product->featured_image && file_exists(public_path($product->featured_image))) {
+                unlink(public_path($product->featured_image));
             }
-            $path = $request->file('featured_image')->store('products', 'public');
-            $validated['featured_image'] = $path;
+            
+            $file = $request->file('featured_image');
+            $filename = 'product_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/products'), $filename);
+            $validated['featured_image'] = 'uploads/products/' . $filename;
         }
 
         $product->update($validated);
 
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $index => $image) {
-                $path = $image->store('products/gallery', 'public');
+                $filename = 'gallery_' . time() . '_' . uniqid() . '_' . $index . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('uploads/products/gallery'), $filename);
                 $product->images()->create([
-                    'image_path' => $path,
+                    'image_path' => 'uploads/products/gallery/' . $filename,
                     'sort_order' => $product->images()->count() + $index
                 ]);
             }
@@ -122,12 +131,16 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        if ($product->featured_image) {
-            Storage::disk('public')->delete($product->featured_image);
+        // Delete featured image
+        if ($product->featured_image && file_exists(public_path($product->featured_image))) {
+            unlink(public_path($product->featured_image));
         }
         
+        // Delete gallery images
         foreach ($product->images as $image) {
-            Storage::disk('public')->delete($image->image_path);
+            if (file_exists(public_path($image->image_path))) {
+                unlink(public_path($image->image_path));
+            }
         }
         
         $product->delete();
