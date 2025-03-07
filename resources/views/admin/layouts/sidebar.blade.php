@@ -27,9 +27,17 @@
 
                 <!-- Questions & Answers -->
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('admin.questions.index') }}" class="nav-link {{ request()->routeIs('admin.questions.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-question-circle"></i>
                         <p>Sorular - Cevaplar</p>
+                    </a>
+                </li>
+
+                <!-- Product Matches -->
+                <li class="nav-item">
+                    <a href="{{ route('admin.product-matches.index') }}" class="nav-link {{ request()->routeIs('admin.product-matches.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-link"></i>
+                        <p>Ürün Eşleştirmeleri</p>
                     </a>
                 </li>
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\QuestionAnswerController;
+use App\Http\Controllers\Admin\ProductMatchController;
 
 Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -15,4 +16,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::resource('contacts', ContactController::class)->except(['create', 'store', 'show']);
     Route::resource('users', UserController::class);
     Route::resource('questions', QuestionAnswerController::class);
+    Route::resource('product-matches', ProductMatchController::class);
+    Route::post('product-matches/generate', [ProductMatchController::class, 'generateCombinations'])->name('product-matches.generate');
 });
