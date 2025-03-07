@@ -17,7 +17,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Sipariş Detayları</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <table class="table">
                         <thead>
                             <tr>
@@ -53,7 +53,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Müşteri Bilgileri</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <p><strong>Ad Soyad:</strong> {{ $order->user->full_name }}</p>
                     <p><strong>E-posta:</strong> {{ $order->user->email }}</p>
                 </div>
@@ -63,7 +63,7 @@
                 <div class="card-header">
                     <h3 class="card-title">Teslimat Bilgileri</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     <p><strong>Ad Soyad:</strong> {{ $order->shipping_name }} {{ $order->shipping_surname }}</p>
                     <p><strong>Telefon:</strong> {{ $order->shipping_phone }}</p>
                     <p><strong>Şehir:</strong> {{ $order->city }}</p>

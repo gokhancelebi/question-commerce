@@ -12,7 +12,7 @@
     </div>
 
     <div class="card">
-        <div class="card-body">
+        <div class="card-body p-4">
             <div class="row">
                 <div class="col-md-6">
                     <p><strong>Ad Soyad:</strong> {{ $contact->name }}</p>

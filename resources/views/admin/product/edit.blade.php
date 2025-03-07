@@ -9,19 +9,23 @@
         </a>
     </div>
 
-    <form action="{{ $product->exists ? route('admin.products.update', $product->id) : route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        @if($product->exists)
-            @method('PUT')
-        @endif
+    <div class="card">
+        <div class="card-body p-4">
+            <form action="{{ $product->exists ? route('admin.products.update', $product->id) : route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @if($product->exists)
+                    @method('PUT')
+                @endif
 
-        @include('admin.product._form')
+                @include('admin.product._form')
 
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> {{ $product->exists ? 'Güncelle' : 'Oluştur' }}
-            </button>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> {{ $product->exists ? 'Güncelle' : 'Oluştur' }}
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 @endsection

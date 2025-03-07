@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>{{ $question->exists ? 'Soru Düzenle' : 'Yeni Soru' }}</h1>
         <a href="{{ route('admin.questions.index') }}" class="btn btn-secondary">
@@ -9,20 +9,24 @@
         </a>
     </div>
 
-    <form action="{{ $question->exists ? route('admin.questions.update', $question->id) : route('admin.questions.store') }}" method="POST">
-        @csrf
-        @if($question->exists)
-            @method('PUT')
-        @endif
+    <div class="card">
+        <div class="card-body p-4">
+            <form action="{{ $question->exists ? route('admin.questions.update', $question->id) : route('admin.questions.store') }}" method="POST">
+                @csrf
+                @if($question->exists)
+                    @method('PUT')
+                @endif
 
-        @include('admin.question-answer._form')
+                @include('admin.question-answer._form')
 
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save"></i> {{ $question->exists ? 'Güncelle' : 'Oluştur' }}
-            </button>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> {{ $question->exists ? 'Güncelle' : 'Oluştur' }}
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 @endsection
 
