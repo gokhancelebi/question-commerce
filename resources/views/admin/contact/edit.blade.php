@@ -3,7 +3,7 @@
 @section('title', 'İletişim Mesajı')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>İletişim Mesajı</h1>
         <a href="{{ route('admin.contacts.index') }}" class="btn btn-secondary">

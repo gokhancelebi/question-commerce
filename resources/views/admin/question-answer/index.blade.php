@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Sorular ve Cevaplar</h1>
         <a href="{{ route('admin.questions.create') }}" class="btn btn-primary">

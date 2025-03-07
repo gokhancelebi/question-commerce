@@ -3,7 +3,7 @@
 @section('title', 'Sipariş Detayı')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Sipariş #{{ $order->id }}</h1>
         <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary">
