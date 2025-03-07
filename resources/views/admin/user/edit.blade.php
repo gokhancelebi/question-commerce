@@ -9,12 +9,6 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <form action="{{ $user->exists ? route('admin.users.update', $user->id) : route('admin.users.store') }}" method="POST">
         @if($user->exists)
             @method('PUT')

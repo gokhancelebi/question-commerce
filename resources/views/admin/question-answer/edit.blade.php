@@ -9,12 +9,6 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <form action="{{ $question->exists ? route('admin.questions.update', $question->id) : route('admin.questions.store') }}" method="POST">
         @csrf
         @if($question->exists)
