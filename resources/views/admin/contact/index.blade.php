@@ -3,54 +3,41 @@
 @section('title', 'İletişim Mesajları')
 
 @section('content')
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">İletişim Mesajları</h1>
-            </div>
-        </div>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>İletişim Mesajları</h1>
     </div>
-</div>
 
-<div class="content">
-    <div class="container-fluid">
-        <div class="card">
-            <div class="card-body p-0">
-                <table class="table">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Tarih</th>
-                            <th>Kaynak</th>
+                            <th style="width: 50px">ID</th>
                             <th>Ad Soyad</th>
-                            <th>E-posta</th>
+                            <th>Email</th>
                             <th>Konu</th>
-                            <th>Durum</th>
-                            <th>İşlemler</th>
+                            <th>Tarih</th>
+                            <th style="width: 200px">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($contacts as $contact)
                             <tr>
-                                <td>{{ $contact->created_at->format('d.m.Y H:i') }}</td>
-                                <td>{!! $contact->source_badge !!}</td>
+                                <td>{{ $contact->id }}</td>
                                 <td>{{ $contact->full_name }}</td>
                                 <td>{{ $contact->email }}</td>
                                 <td>{{ $contact->subject }}</td>
-                                <td>{!! $contact->status_badge !!}</td>
+                                <td>{{ $contact->created_at->format('d.m.Y H:i') }}</td>
                                 <td>
-                                    <a href="{{ route('admin.contacts.edit', $contact) }}" 
-                                       class="btn btn-sm btn-info">
+                                    <a href="{{ route('admin.contacts.edit', $contact->id) }}" class="btn btn-sm btn-info me-1" title="Görüntüle">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <form action="{{ route('admin.contacts.destroy', $contact) }}" 
-                                          method="POST" 
-                                          class="d-inline-block">
+                                    <form action="{{ route('admin.contacts.destroy', $contact->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" 
-                                                class="btn btn-sm btn-danger" 
-                                                onclick="return confirm('Bu mesajı silmek istediğinize emin misiniz?')">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bu mesajı silmek istediğinizden emin misiniz?')" title="Sil">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>

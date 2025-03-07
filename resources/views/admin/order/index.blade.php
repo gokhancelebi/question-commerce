@@ -3,42 +3,39 @@
 @section('title', 'Siparişler')
 
 @section('content')
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">Siparişler</h1>
-            </div>
-        </div>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Siparişler</h1>
     </div>
-</div>
 
-<div class="content">
-    <div class="container-fluid">
-        <div class="card">
-            <div class="card-body p-0">
-                <table class="table">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Sipariş No</th>
+                            <th style="width: 50px">ID</th>
                             <th>Müşteri</th>
-                            <th>Toplam Tutar</th>
+                            <th>Toplam</th>
                             <th>Durum</th>
                             <th>Tarih</th>
-                            <th>İşlemler</th>
+                            <th style="width: 200px">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($orders as $order)
                             <tr>
-                                <td>#{{ $order->id }}</td>
-                                <td>{{ $order->user->name }}</td>
-                                <td>{{ number_format($order->total_amount, 2) }} ₺</td>
-                                <td>{!! $order->status_badge !!}</td>
+                                <td>{{ $order->id }}</td>
+                                <td>{{ $order->user->full_name }}</td>
+                                <td>{{ number_format($order->total, 2) }} TL</td>
+                                <td>
+                                    <span class="badge bg-{{ $order->status_color }}">
+                                        {{ $order->status_text }}
+                                    </span>
+                                </td>
                                 <td>{{ $order->created_at->format('d.m.Y H:i') }}</td>
                                 <td>
-                                    <a href="{{ route('admin.orders.show', $order) }}" 
-                                       class="btn btn-sm btn-info">
+                                    <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-info me-1" title="Detay">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                 </td>
