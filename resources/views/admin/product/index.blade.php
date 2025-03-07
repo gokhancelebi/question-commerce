@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Ürünler</h1>
         <a href="{{ route('admin.products.create') }}" class="btn btn-primary">
@@ -10,7 +10,7 @@
     </div>
 
     <div class="card">
-        <div class="card-body">
+        <div class="card-body p-4">
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
