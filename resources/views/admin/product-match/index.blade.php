@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Ürün Eşleştirmeleri</h1>
         <div>
@@ -39,7 +39,7 @@
     </div>
 
     <div class="card">
-        <div class="card-body">
+        <div class="card-body p-4">
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
@@ -52,7 +52,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($productMatches as $match)
+                        @forelse($productMatches as $match)
                             <tr>
                                 <td>{{ $match->id }}</td>
                                 <td>{{ $match->product->title }}</td>
@@ -87,11 +87,19 @@
                                     </form>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center">Henüz eşleştirme bulunmuyor.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
-            {{ $productMatches->links() }}
+            @if($productMatches->hasPages())
+                <div class="card-footer">
+                    {{ $productMatches->links() }}
+                </div>
+            @endif
         </div>
     </div>
 </div>
