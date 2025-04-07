@@ -25,10 +25,15 @@
                                     class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary">
                             </div>
                             <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-posta Adresiniz</label>
-                                <input type="email" id="email" name="email" required
+                                <label for="surname" class="block text-sm font-medium text-gray-700 mb-1">Soyadınız</label>
+                                <input type="text" id="surname" name="surname" required
                                     class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary">
                             </div>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-posta Adresiniz</label>
+                            <input type="email" id="email" name="email" required
+                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary">
                         </div>
                         <div>
                             <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Konu</label>
