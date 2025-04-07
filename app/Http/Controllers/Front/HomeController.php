@@ -42,50 +42,52 @@ class HomeController extends Controller
             return str_starts_with($key, 'question');
         })->values()->toArray();
 
-        // Find product matches that have these answers
-        $productMatches = ProductMatch::whereJsonContains('answer_combinations', $selectedAnswerIds)
+        // Find product match that has these answers
+        $productMatch = ProductMatch::whereJsonContains('answer_combinations', $selectedAnswerIds)
             ->with(['product', 'product.images'])
-            ->get();
+            ->first();
 
-        $matchingProducts = collect();
+        if ($productMatch && $productMatch->product) {
+            $product = $productMatch->product;
+            $matchingProduct = [
+                'id' => $product->id,
+                'name' => $product->title,
+                'price' => $product->price,
+                'description' => $product->description,
+                'image' => $product->featured_image ? asset($product->featured_image) :
+                    ($product->images->first() ? asset($product->images->first()->image_path) : null),
+                'external_url' => $product->external_url,
+            ];
 
-        if ($productMatches->isNotEmpty()) {
-            // Transform product matches into a format suitable for frontend
-            $matchingProducts = $productMatches->map(function($match) {
-                $product = $match->product;
-                return [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'price' => $product->price,
-                    'description' => $product->description,
-                    'image' => $product->images->first() ? asset($product->images->first()->image_path) : null,
-                    'external_url' => $product->external_url,
-                ];
-            });
+            return response()->json([
+                'success' => true,
+                'products' => [$matchingProduct]
+            ]);
         }
 
-        // If no matches found, return some default products
-        if ($matchingProducts->isEmpty()) {
-            $defaultProducts = Product::with('images')
-                ->inRandomOrder()
-                ->limit(3)
-                ->get();
+        // If no match found, return a random product as fallback
+        $randomProduct = Product::with('images')
+            ->inRandomOrder()
+            ->first();
 
-            $matchingProducts = $defaultProducts->map(function($product) {
-                return [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'price' => $product->price,
-                    'description' => $product->description,
-                    'image' => $product->images->first() ? asset($product->images->first()->image_path) : null,
-                    'external_url' => $product->external_url,
-                ];
-            });
+        if ($randomProduct) {
+            return response()->json([
+                'success' => true,
+                'products' => [[
+                    'id' => $randomProduct->id,
+                    'name' => $randomProduct->title,
+                    'price' => $randomProduct->price,
+                    'description' => $randomProduct->description,
+                    'image' => $randomProduct->featured_image ? asset($randomProduct->featured_image) :
+                        ($randomProduct->images->first() ? asset($randomProduct->images->first()->image_path) : null),
+                    'external_url' => $randomProduct->external_url,
+                ]]
+            ]);
         }
 
         return response()->json([
-            'success' => true,
-            'products' => $matchingProducts->toArray()
+            'success' => false,
+            'products' => []
         ]);
     }
 }

@@ -246,6 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Show loading indicator
         const loadingIndicator = document.createElement('div');
+        loadingIndicator.id = 'loadingIndicator';  // Add an ID for easier removal
         loadingIndicator.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
         loadingIndicator.innerHTML = `
             <div class="bg-white p-6 rounded-lg shadow-lg text-center">
@@ -260,6 +261,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (questionForm) {
             questionForm.style.display = 'none';
         }
+
+        // Function to remove loading indicator
+        const removeLoadingIndicator = () => {
+            const indicator = document.getElementById('loadingIndicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        };
 
         // Make AJAX call to process survey
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -280,11 +289,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            // Remove loading indicator if it exists
-            const existingLoadingIndicator = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
-            if (existingLoadingIndicator) {
-                existingLoadingIndicator.remove();
-            }
+            // Remove loading indicator
+            removeLoadingIndicator();
 
             if (data.success && data.products && data.products.length > 0) {
                 // Get the first (best) match
@@ -335,7 +341,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 productRecommendation.classList.remove('hidden');
                 productRecommendation.scrollIntoView({ behavior: 'smooth' });
             } else {
-                // Handle error or no products found
                 const productRecommendation = document.getElementById('productRecommendation');
                 productRecommendation.innerHTML = `
                     <div class="text-center p-8 bg-white rounded-lg shadow-md">
@@ -357,16 +362,19 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Error:', error);
             // Remove loading indicator
-            const existingLoadingIndicator = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
-            if (existingLoadingIndicator) {
-                existingLoadingIndicator.remove();
-            }
+            removeLoadingIndicator();
+
             // Show error message
             showErrorMessage(slide, 'Bir hata oluştu. Lütfen tekrar deneyin.');
+
             // Show the form again
             if (questionForm) {
                 questionForm.style.display = 'block';
             }
+        })
+        .finally(() => {
+            // Ensure loading indicator is removed even if something goes wrong
+            removeLoadingIndicator();
         });
     });
 });
