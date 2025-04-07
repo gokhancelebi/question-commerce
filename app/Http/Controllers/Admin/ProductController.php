@@ -39,7 +39,8 @@ class ProductController extends Controller
             'quantity' => 'required|integer|min:0',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
+            'external_url' => 'nullable|url|max:2048'
         ]);
 
         if ($request->hasFile('featured_image')) {
@@ -94,7 +95,8 @@ class ProductController extends Controller
             'quantity' => 'required|integer|min:0',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
+            'external_url' => 'nullable|url|max:2048'
         ]);
 
         if ($request->hasFile('featured_image')) {
@@ -102,7 +104,7 @@ class ProductController extends Controller
             if ($product->featured_image && file_exists(public_path($product->featured_image))) {
                 unlink(public_path($product->featured_image));
             }
-            
+
             $file = $request->file('featured_image');
             $filename = 'product_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/products'), $filename);
@@ -135,14 +137,14 @@ class ProductController extends Controller
         if ($product->featured_image && file_exists(public_path($product->featured_image))) {
             unlink(public_path($product->featured_image));
         }
-        
+
         // Delete gallery images
         foreach ($product->images as $image) {
             if (file_exists(public_path($image->image_path))) {
                 unlink(public_path($image->image_path));
             }
         }
-        
+
         $product->delete();
 
         return redirect()->route('admin.products.index')

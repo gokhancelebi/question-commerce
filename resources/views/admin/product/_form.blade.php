@@ -16,6 +16,15 @@
             @enderror
         </div>
 
+        <div class="mb-3">
+            <label for="external_url" class="form-label">Harici Satın Alma URL'si</label>
+            <input type="url" class="form-control @error('external_url') is-invalid @enderror" id="external_url" name="external_url" value="{{ old('external_url', $product->external_url) }}" placeholder="https://example.com/product">
+            <small class="form-text text-muted">Ürün harici bir siteden satın alınacaksa URL'yi buraya girin. Boş bırakılırsa normal satın alma işlemi gerçekleşir.</small>
+            @error('external_url')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
