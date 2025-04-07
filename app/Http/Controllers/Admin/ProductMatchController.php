@@ -16,7 +16,7 @@ class ProductMatchController extends Controller
         $productMatches = ProductMatch::with(['product'])->paginate(10);
         $totalCombinations = $this->calculateTotalCombinations();
         $existingCombinations = ProductMatch::count();
-        
+
         return view('admin.product-match.index', compact('productMatches', 'totalCombinations', 'existingCombinations'));
     }
 
@@ -25,7 +25,7 @@ class ProductMatchController extends Controller
         $products = Product::all();
         $questions = Question::with('answers')->orderBy('order')->get();
         $productMatch = new ProductMatch();
-        
+
         return view('admin.product-match.edit', compact('products', 'questions', 'productMatch'));
     }
 
@@ -38,9 +38,12 @@ class ProductMatchController extends Controller
             'is_active' => 'boolean'
         ]);
 
+        // Extract only the answer IDs from the answer_combinations array
+        $answerIds = array_values($validated['answer_combinations']);
+
         ProductMatch::create([
             'product_id' => $validated['product_id'],
-            'answer_combinations' => $validated['answer_combinations'],
+            'answer_combinations' => $answerIds,
             'is_active' => $validated['is_active'] ?? true
         ]);
 
@@ -53,7 +56,7 @@ class ProductMatchController extends Controller
         $productMatch = ProductMatch::findOrFail($id);
         $products = Product::all();
         $questions = Question::with('answers')->orderBy('order')->get();
-        
+
         return view('admin.product-match.edit', compact('productMatch', 'products', 'questions'));
     }
 
@@ -68,9 +71,12 @@ class ProductMatchController extends Controller
             'is_active' => 'boolean'
         ]);
 
+        // Extract only the answer IDs from the answer_combinations array
+        $answerIds = array_values($validated['answer_combinations']);
+
         $productMatch->update([
             'product_id' => $validated['product_id'],
-            'answer_combinations' => $validated['answer_combinations'],
+            'answer_combinations' => $answerIds,
             'is_active' => $validated['is_active'] ?? true
         ]);
 
@@ -91,10 +97,10 @@ class ProductMatchController extends Controller
     {
         // Get all questions with their answers
         $questions = Question::with('answers')->orderBy('order')->get();
-        
+
         // Get available products
         $products = Product::all();
-        
+
         if ($products->isEmpty()) {
             return redirect()->route('admin.product-matches.index')
                 ->with('error', 'Önce ürün eklemelisiniz.');
@@ -102,15 +108,15 @@ class ProductMatchController extends Controller
 
         // Generate all possible combinations
         $combinations = $this->generateAllCombinations($questions);
-        
+
         // Delete existing combinations
         ProductMatch::truncate();
-        
+
         // Create new combinations
         foreach ($combinations as $index => $combination) {
             // Assign products in a round-robin fashion
             $productIndex = $index % $products->count();
-            
+
             ProductMatch::create([
                 'product_id' => $products[$productIndex]->id,
                 'answer_combinations' => $combination,
@@ -125,7 +131,7 @@ class ProductMatchController extends Controller
     private function generateAllCombinations($questions)
     {
         $combinations = [[]];
-        
+
         foreach ($questions as $question) {
             $temp = [];
             foreach ($combinations as $combination) {
@@ -135,7 +141,7 @@ class ProductMatchController extends Controller
             }
             $combinations = $temp;
         }
-        
+
         return $combinations;
     }
 
@@ -143,14 +149,14 @@ class ProductMatchController extends Controller
     {
         $total = 1;
         $questions = Question::with('answers')->get();
-        
+
         foreach ($questions as $question) {
             $answerCount = $question->answers->count();
             if ($answerCount > 0) {
                 $total *= $answerCount;
             }
         }
-        
+
         return $total;
     }
 }

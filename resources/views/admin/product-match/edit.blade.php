@@ -52,8 +52,8 @@
                         <div class="list-group">
                             @foreach($question->answers as $answer)
                                 <label class="list-group-item">
-                                    <input type="radio" 
-                                           name="answer_combinations[]" 
+                                    <input type="radio"
+                                           name="answer_combinations[{{ $question->id }}]"
                                            value="{{ $answer->id }}"
                                            class="form-check-input me-2"
                                            {{ in_array($answer->id, old('answer_combinations', $productMatch->answer_combinations ?? [])) ? 'checked' : '' }}
@@ -77,4 +77,4 @@
         </div>
     </form>
 </div>
-@endsection 
+@endsection
