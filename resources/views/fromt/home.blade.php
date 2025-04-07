@@ -260,18 +260,28 @@ document.addEventListener('DOMContentLoaded', function() {
         questionForm.style.display = 'none';
 
         // Make AJAX call to process survey
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
         fetch('/survey/process', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                'X-CSRF-TOKEN': csrfToken || ''
             },
             body: JSON.stringify(answers)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
-            // Remove loading indicator
-            document.body.removeChild(loadingIndicator);
+            // Remove loading indicator if it exists
+            const existingLoadingIndicator = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
+            if (existingLoadingIndicator) {
+                existingLoadingIndicator.remove();
+            }
 
             if (data.success && data.products.length > 0) {
                 // Get the first (best) match
