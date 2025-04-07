@@ -1,4 +1,4 @@
-@extends('fromt.layouts.app')
+@extends('front.layouts.app')
 @section('content')
 
 <main>
