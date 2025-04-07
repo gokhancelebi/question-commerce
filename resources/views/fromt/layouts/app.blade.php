@@ -199,7 +199,7 @@
    @yield('content')
     <footer class="bg-gray-900 text-white pt-16 pb-8 px-4">
         <div class="container mx-auto max-w-6xl">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                 <div>
                     <a href="#" class="text-3xl font-['Pacifico'] text-white mb-4 inline-block">logo</a>
                     <p class="text-gray-400 mb-6">Akıllı sorular ve kişiselleştirilmiş öneriler aracılığıyla mükemmel
@@ -259,33 +259,6 @@
                                 Şartları</a>
                         </li>
                     </ul>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Bülten</h3>
-                    <p class="text-gray-400 mb-4">Özel teklifler ve ürün güncellemeleri almak için abone olun.</p>
-                    <form class="mb-4">
-                        <div class="flex">
-                            <input type="email" placeholder="E-posta adresiniz"
-                                class="bg-gray-800 text-white px-4 py-2 w-full border-none !rounded-l-button focus:outline-none focus:ring-2 focus:ring-primary">
-                            <button type="submit"
-                                class="bg-primary text-white px-4 py-2 !rounded-r-button hover:bg-opacity-90 whitespace-nowrap">Abone
-                                Ol</button>
-                        </div>
-                    </form>
-                    <div class="flex items-center space-x-2">
-                        <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="ri-visa-fill ri-lg text-gray-400"></i>
-                        </div>
-                        <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="ri-mastercard-fill ri-lg text-gray-400"></i>
-                        </div>
-                        <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="ri-paypal-fill ri-lg text-gray-400"></i>
-                        </div>
-                        <div class="w-8 h-8 flex items-center justify-center">
-                            <i class="ri-apple-fill ri-lg text-gray-400"></i>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="border-t border-gray-800 pt-8 text-center text-gray-500">
