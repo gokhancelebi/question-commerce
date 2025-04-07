@@ -24,7 +24,7 @@ class HomeController extends Controller
             ->orderBy('order')
             ->get();
 
-        return view('fromt.home', compact('questions'));
+        return view('front.home', compact('questions'));
     }
 
     /**
