@@ -8,6 +8,7 @@ use App\Models\Answer;
 use App\Models\Product;
 use App\Models\ProductMatch;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class HomeController extends Controller
 {
@@ -35,7 +36,6 @@ class HomeController extends Controller
     public function processSurvey(Request $request)
     {
         $answers = $request->all();
-        $matchingProducts = [];
 
         // Get all selected answer IDs
         $selectedAnswerIds = collect($answers)->filter(function($value, $key) {
@@ -44,8 +44,10 @@ class HomeController extends Controller
 
         // Find product matches that have these answers
         $productMatches = ProductMatch::whereJsonContains('answer_combinations', $selectedAnswerIds)
-            ->with('product')
+            ->with(['product', 'product.images'])
             ->get();
+
+        $matchingProducts = collect();
 
         if ($productMatches->isNotEmpty()) {
             // Transform product matches into a format suitable for frontend
@@ -56,33 +58,34 @@ class HomeController extends Controller
                     'name' => $product->name,
                     'price' => $product->price,
                     'description' => $product->description,
-                    'image' => $product->images->first() ? $product->images->first()->image_path : null,
+                    'image' => $product->images->first() ? asset($product->images->first()->image_path) : null,
                     'external_url' => $product->external_url,
                 ];
             });
         }
 
-        // If no exact matches found, return some default products
+        // If no matches found, return some default products
         if ($matchingProducts->isEmpty()) {
-            $matchingProducts = Product::with('images')
+            $defaultProducts = Product::with('images')
                 ->inRandomOrder()
                 ->limit(3)
-                ->get()
-                ->map(function($product) {
-                    return [
-                        'id' => $product->id,
-                        'name' => $product->name,
-                        'price' => $product->price,
-                        'description' => $product->description,
-                        'image' => $product->images->first() ? $product->images->first()->image_path : null,
-                        'external_url' => $product->external_url,
-                    ];
-                });
+                ->get();
+
+            $matchingProducts = $defaultProducts->map(function($product) {
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'description' => $product->description,
+                    'image' => $product->images->first() ? asset($product->images->first()->image_path) : null,
+                    'external_url' => $product->external_url,
+                ];
+            });
         }
 
         return response()->json([
             'success' => true,
-            'products' => $matchingProducts
+            'products' => $matchingProducts->toArray()
         ]);
     }
 }

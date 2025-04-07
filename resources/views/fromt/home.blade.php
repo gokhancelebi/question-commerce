@@ -256,8 +256,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(loadingIndicator);
 
         // Hide the question form
-        const questionForm = document.querySelector('.bg-white.rounded-lg.shadow-md');
-        questionForm.style.display = 'none';
+        const questionForm = document.querySelector('.bg-white.rounded-lg.shadow-md.p-6.mb-8');
+        if (questionForm) {
+            questionForm.style.display = 'none';
+        }
 
         // Make AJAX call to process survey
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -266,7 +268,8 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken || ''
+                'X-CSRF-TOKEN': csrfToken || '',
+                'Accept': 'application/json'
             },
             body: JSON.stringify(answers)
         })
@@ -283,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 existingLoadingIndicator.remove();
             }
 
-            if (data.success && data.products.length > 0) {
+            if (data.success && data.products && data.products.length > 0) {
                 // Get the first (best) match
                 const bestMatch = data.products[0];
 
@@ -294,14 +297,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="bg-white rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl">
                         <div class="aspect-w-16 aspect-h-9 relative h-64">
                             <img src="${bestMatch.image || 'https://via.placeholder.com/800x600'}"
-                                alt="${bestMatch.name}" class="w-full h-full object-cover object-top">
+                                alt="${bestMatch.name}" class="w-full h-full object-cover object-center">
                         </div>
                         <div class="p-6">
                             <div class="flex justify-between items-start mb-4">
                                 <h4 class="text-xl font-bold">${bestMatch.name}</h4>
-                                <span class="text-xl font-bold text-primary">${bestMatch.price.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} TL</span>
+                                <span class="text-xl font-bold text-primary">${Number(bestMatch.price).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} TL</span>
                             </div>
-                            <p class="text-gray-600 mb-6">${bestMatch.description}</p>
+                            <p class="text-gray-600 mb-6">${bestMatch.description || ''}</p>
                             <div class="flex flex-col sm:flex-row gap-4">
                                 ${bestMatch.external_url ? `
                                     <a href="${bestMatch.external_url}" target="_blank"
@@ -354,11 +357,16 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Error:', error);
             // Remove loading indicator
-            document.body.removeChild(loadingIndicator);
+            const existingLoadingIndicator = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
+            if (existingLoadingIndicator) {
+                existingLoadingIndicator.remove();
+            }
             // Show error message
             showErrorMessage(slide, 'Bir hata oluştu. Lütfen tekrar deneyin.');
             // Show the form again
-            questionForm.style.display = 'block';
+            if (questionForm) {
+                questionForm.style.display = 'block';
+            }
         });
     });
 });
