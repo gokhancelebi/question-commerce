@@ -3,10 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Front\HomeController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Front routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/survey/process', [HomeController::class, 'processSurvey'])->name('survey.process');
 
 // Guest routes (only accessible when not logged in)
 Route::middleware('guest')->group(function () {
