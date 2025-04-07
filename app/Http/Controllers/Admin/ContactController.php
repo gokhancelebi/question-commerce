@@ -18,10 +18,8 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $contacts = Contact::latest()
-            ->paginate(10);
-
-        return view('admin.contact.index', compact('contacts'));
+        $contacts = Contact::orderBy('created_at', 'desc')->paginate(20);
+        return view('admin.contacts.index', compact('contacts'));
     }
 
     /**
@@ -43,9 +41,10 @@ class ContactController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Contact $contact)
     {
-        //
+        $contact->update(['is_read' => true]);
+        return view('admin.contacts.show', compact('contact'));
     }
 
     /**
@@ -90,8 +89,6 @@ class ContactController extends Controller
     public function destroy(Contact $contact)
     {
         $contact->delete();
-
-        return redirect()->route('admin.contacts.index')
-            ->with('success', 'Mesaj başarıyla silindi.');
+        return redirect()->route('admin.contacts.index')->with('success', 'İletişim mesajı silindi.');
     }
 }

@@ -10,19 +10,15 @@ class Contact extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id',
         'name',
-        'surname',
         'email',
         'subject',
         'message',
-        'status',
-        'reply',
-        'replied_at'
+        'is_read'
     ];
 
     protected $casts = [
-        'replied_at' => 'datetime',
+        'is_read' => 'boolean'
     ];
 
     public function user()
@@ -47,7 +43,7 @@ class Contact extends Model
 
     public function getSourceBadgeAttribute()
     {
-        return $this->user_id 
+        return $this->user_id
             ? '<span class="badge badge-info">Kayıtlı Kullanıcı</span>'
             : '<span class="badge badge-secondary">Ziyaretçi</span>';
     }

@@ -65,6 +65,30 @@
                     </a>
                 </li>
 
+                <!-- Pages -->
+                <li class="nav-item">
+                    <a href="{{ route('admin.pages.index') }}" class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <p>Sayfalar</p>
+                    </a>
+                </li>
+
+                <!-- Contact Messages -->
+                <li class="nav-item">
+                    <a href="{{ route('admin.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-envelope"></i>
+                        <p>
+                            İletişim Mesajları
+                            @php
+                                $unreadCount = \App\Models\Contact::where('is_read', false)->count();
+                            @endphp
+                            @if($unreadCount > 0)
+                                <span class="badge badge-warning right">{{ $unreadCount }}</span>
+                            @endif
+                        </p>
+                    </a>
+                </li>
+
                 <!-- Website Settings -->
                 <li class="nav-item">
                     <a href="#" class="nav-link">

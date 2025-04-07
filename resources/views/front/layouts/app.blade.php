@@ -162,14 +162,16 @@
     <header class="sticky-header fixed w-full top-0 z-50 bg-white">
         <div class="container mx-auto max-w-6xl px-4 h-full flex items-center justify-between">
             <div class="flex items-center">
-                <a href="#" class="text-3xl font-['Pacifico'] text-primary">logo</a>
+                <a href="{{ route('home') }}" class="text-3xl font-['Pacifico'] text-primary">logo</a>
             </div>
             <nav class="hidden md:flex items-center space-x-8">
-                <a href="#" class="text-gray-800 hover:text-primary transition-colors whitespace-nowrap">Ana
+                <a href="{{ route('home') }}" class="text-gray-800 hover:text-primary transition-colors whitespace-nowrap">Ana
                     Sayfa</a>
-                <a href="#"
+                <a href="{{ route('pages.show', 'hakkimizda') }}"
                     class="text-gray-800 hover:text-primary transition-colors whitespace-nowrap">Hakkımızda</a>
-                <a href="#"
+                <a href="{{ route('pages.show', 'nasil-calisir') }}"
+                    class="text-gray-800 hover:text-primary transition-colors whitespace-nowrap">Nasıl Çalışır</a>
+                <a href="{{ route('pages.show', 'iletisim') }}"
                     class="text-gray-800 hover:text-primary transition-colors whitespace-nowrap">İletişim</a>
             </nav>
             <div class="flex items-center space-x-4">
@@ -201,7 +203,7 @@
         <div class="container mx-auto max-w-6xl">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                 <div>
-                    <a href="#" class="text-3xl font-['Pacifico'] text-white mb-4 inline-block">logo</a>
+                    <a href="{{ route('home') }}" class="text-3xl font-['Pacifico'] text-white mb-4 inline-block">logo</a>
                     <p class="text-gray-400 mb-6">Akıllı sorular ve kişiselleştirilmiş öneriler aracılığıyla mükemmel
                         ürününüzü bulun.</p>
                     <div class="flex space-x-4">
@@ -230,11 +232,13 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Hızlı Bağlantılar</h3>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Ana Sayfa</a>
+                        <li><a href="{{ route('home') }}" class="text-gray-400 hover:text-white transition-colors">Ana Sayfa</a>
                         </li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Hakkımızda</a>
+                        <li><a href="{{ route('pages.show', 'hakkimizda') }}" class="text-gray-400 hover:text-white transition-colors">Hakkımızda</a>
                         </li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">İletişim</a>
+                        <li><a href="{{ route('pages.show', 'nasil-calisir') }}" class="text-gray-400 hover:text-white transition-colors">Nasıl
+                                Çalışır</a></li>
+                        <li><a href="{{ route('pages.show', 'iletisim') }}" class="text-gray-400 hover:text-white transition-colors">İletişim</a>
                         </li>
                     </ul>
                 </div>

@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             OrderSeeder::class,
             ContactSeeder::class,
             QuestionAnswerSeeder::class,
+            PageSeeder::class,
         ]);
     }
 }
