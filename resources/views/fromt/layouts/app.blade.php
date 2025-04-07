@@ -334,6 +334,7 @@
                         class="w-full bg-primary text-white py-2 !rounded-button hover:bg-opacity-90 transition-all">Giriş
                         Yap</button>
                 </form>
+                <!--
                 <div class="mt-6">
                     <div class="relative">
                         <div class="absolute inset-0 flex items-center">
@@ -364,6 +365,7 @@
                         </button>
                     </div>
                 </div>
+            -->
             </div>
             <!-- Register Form -->
             <div id="registerForm" class="p-6 hidden">
@@ -416,6 +418,7 @@
                         class="w-full bg-primary text-white py-2 !rounded-button hover:bg-opacity-90 transition-all">Kayıt
                         Ol</button>
                 </form>
+                <!--
                 <div class="mt-6">
                     <div class="relative">
                         <div class="absolute inset-0 flex items-center">
@@ -446,6 +449,7 @@
                         </button>
                     </div>
                 </div>
+            -->
             </div>
         </div>
     </div>

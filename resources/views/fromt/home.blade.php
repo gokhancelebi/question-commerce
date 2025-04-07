@@ -5,8 +5,7 @@
     <section class="pt-32 pb-16 px-4 bg-gradient-to-br from-white to-gray-100">
         <div class="container mx-auto max-w-5xl">
             <div class="text-center mb-12">
-                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">5 basit soruyu yanıtlayın ve
-                    ihtiyaçlarınıza uygun ideal ürünü önerelim. Artık sonsuz göz atma yok!</p>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">5 basit soruyu yanıtlayın ve  ideal ürünü önerelim. </p>
             </div>
             <div class="bg-white rounded-lg shadow-md p-6 mb-8">
                 <!-- Progress Steps -->
@@ -365,78 +364,6 @@
                                 class="border border-primary text-primary px-6 py-3 !rounded-button hover:bg-primary hover:bg-opacity-5 transition-all flex-1 whitespace-nowrap flex items-center justify-center">
                                 Alışverişe Devam Et
                             </button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Similar Products Section -->
-                <div class="mt-12">
-                    <h3 class="text-2xl font-bold mb-6">Benzer Ürünler</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Similar Product 1 -->
-                        <div class="bg-white rounded-lg overflow-hidden shadow-md transition-all hover:shadow-lg">
-                            <div class="aspect-w-16 aspect-h-9 relative h-48">
-                                <img src="https://public.readdy.ai/ai/img_res/0f9912ba37ee3fbc9a4d3fb954871768.jpg"
-                                    alt="Similar Laptop 1" class="w-full h-full object-cover object-top">
-                            </div>
-                            <div class="p-4">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h4 class="font-bold">ProBook Elite 14</h4>
-                                    <span class="font-bold text-primary">9.499,99 TL</span>
-                                </div>
-                                <p class="text-gray-600 text-sm mb-4">14" FHD ekran, Intel Core i5, 8GB RAM, 512GB
-                                    SSD</p>
-                                <button
-                                    class="w-full bg-primary bg-opacity-10 text-primary px-4 py-2 !rounded-button hover:bg-opacity-20 transition-all whitespace-nowrap flex items-center justify-center">
-                                    <div class="w-4 h-4 mr-2 flex items-center justify-center">
-                                        <i class="ri-eye-line"></i>
-                                    </div>
-                                    Ürünü İncele
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Similar Product 2 -->
-                        <div class="bg-white rounded-lg overflow-hidden shadow-md transition-all hover:shadow-lg">
-                            <div class="aspect-w-16 aspect-h-9 relative h-48">
-                                <img src="https://public.readdy.ai/ai/img_res/7d2f689eb2623d742ced67ca234f0dce.jpg"
-                                    alt="Similar Laptop 2" class="w-full h-full object-cover object-top">
-                            </div>
-                            <div class="p-4">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h4 class="font-bold">UltraSlim 15</h4>
-                                    <span class="font-bold text-primary">14.299,99 TL</span>
-                                </div>
-                                <p class="text-gray-600 text-sm mb-4">15.6" 4K OLED, Intel Core i7, 16GB RAM, 1TB
-                                    SSD</p>
-                                <button
-                                    class="w-full bg-primary bg-opacity-10 text-primary px-4 py-2 !rounded-button hover:bg-opacity-20 transition-all whitespace-nowrap flex items-center justify-center">
-                                    <div class="w-4 h-4 mr-2 flex items-center justify-center">
-                                        <i class="ri-eye-line"></i>
-                                    </div>
-                                    Ürünü İncele
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Similar Product 3 -->
-                        <div class="bg-white rounded-lg overflow-hidden shadow-md transition-all hover:shadow-lg">
-                            <div class="aspect-w-16 aspect-h-9 relative h-48">
-                                <img src="https://public.readdy.ai/ai/img_res/cdb8a35fee12f29f01976897daf138aa.jpg"
-                                    alt="Similar Laptop 3" class="w-full h-full object-cover object-top">
-                            </div>
-                            <div class="p-4">
-                                <div class="flex justify-between items-start mb-2">
-                                    <h4 class="font-bold">PowerBook Pro 16</h4>
-                                    <span class="font-bold text-primary">16.799,99 TL</span>
-                                </div>
-                                <p class="text-gray-600 text-sm mb-4">16" QHD+, Intel Core i9, 32GB RAM, 2TB SSD
-                                </p>
-                                <button
-                                    class="w-full bg-primary bg-opacity-10 text-primary px-4 py-2 !rounded-button hover:bg-opacity-20 transition-all whitespace-nowrap flex items-center justify-center">
-                                    <div class="w-4 h-4 mr-2 flex items-center justify-center">
-                                        <i class="ri-eye-line"></i>
-                                    </div>
-                                    Ürünü İncele
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>
