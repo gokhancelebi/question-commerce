@@ -11,14 +11,17 @@ class Contact extends Model
 
     protected $fillable = [
         'name',
+        'surname',
         'email',
         'subject',
         'message',
-        'is_read'
+        'status',
+        'reply',
+        'replied_at'
     ];
 
     protected $casts = [
-        'is_read' => 'boolean'
+        'replied_at' => 'datetime'
     ];
 
     public function user()

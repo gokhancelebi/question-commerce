@@ -30,9 +30,7 @@
                                 <td>{{ $contact->subject }}</td>
                                 <td>{{ $contact->created_at->format('d.m.Y H:i') }}</td>
                                 <td>
-                                    <span class="badge bg-{{ $contact->is_read ? 'success' : 'warning' }}">
-                                        {{ $contact->is_read ? 'Okundu' : 'Yeni' }}
-                                    </span>
+                                    {!! $contact->getStatusBadgeAttribute() !!}
                                 </td>
                                 <td>
                                     <a href="{{ route('admin.contacts.show', $contact) }}" class="btn btn-sm btn-info" title="Görüntüle">

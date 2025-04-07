@@ -43,7 +43,9 @@ class ContactController extends Controller
      */
     public function show(Contact $contact)
     {
-        $contact->update(['is_read' => true]);
+        if ($contact->status === 'pending') {
+            $contact->update(['status' => 'read']);
+        }
         return view('admin.contacts.show', compact('contact'));
     }
 
