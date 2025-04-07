@@ -301,9 +301,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 productRecommendation.innerHTML = `
                     <h3 class="text-2xl font-bold text-center mb-6">Mükemmel Eşleşmeniz</h3>
                     <div class="bg-white rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl">
-                        <div class="aspect-w-16 aspect-h-9 relative h-64">
+                        <div class="aspect-w-16 aspect-h-9 relative h-64 p-6">
                             <img src="${bestMatch.image || 'https://via.placeholder.com/800x600'}"
-                                alt="${bestMatch.name}" class="w-full h-full object-cover object-center">
+                                alt="${bestMatch.name}"
+                                class="w-full h-full object-contain">
                         </div>
                         <div class="p-6">
                             <div class="flex justify-between items-start mb-4">
