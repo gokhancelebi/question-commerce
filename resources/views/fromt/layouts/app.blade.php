@@ -703,14 +703,13 @@
         });
         // Function to update progress indicator
         function updateProgressIndicator(currentStep) {
-            // Update the progress bar
-            const progressBar = document.querySelector('.absolute.top-1/2.left-0.right-0');
+            // Update the progress bar using ID selector
+            const progressBar = document.getElementById('progressBar');
             if (progressBar) {
                 const width = (currentStep - 1) * 25;
-                progressBar.innerHTML = `
-<div class="h-0.5 bg-primary" style="width: ${width}%"></div>
-`;
+                progressBar.style.width = `${width}%`;
             }
+
             progressSteps.forEach((step, index) => {
                 const stepNumber = index + 1;
                 const stepElement = step.querySelector('div');
@@ -1126,6 +1125,9 @@ to { opacity: 0; transform: translateY(-10px); }
         showQuestionSlide(1);
         updateCartUI();
     </script>
+
+    @yield('scripts')
+    @stack('scripts')
 </body>
 
 </html>

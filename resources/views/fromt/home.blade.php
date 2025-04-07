@@ -12,7 +12,7 @@
                 <!-- Progress Steps -->
                 <div class="flex justify-between items-center mb-8 relative">
                     <div class="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 -translate-y-1/2">
-                        <div class="h-0.5 bg-primary" style="width: 0%"></div>
+                        <div class="h-0.5 bg-primary" id="progressBar" style="width: 0%"></div>
                     </div>
                     <div class="progress-step relative z-10">
                         <div
@@ -448,3 +448,167 @@
 </main>
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Override the global updateProgressIndicator function
+    window.updateProgressIndicator = function(currentStep) {
+        // Update the progress bar directly using the ID
+        const progressBar = document.getElementById('progressBar');
+        if (progressBar) {
+            const width = (currentStep - 1) * 25;
+            progressBar.style.width = `${width}%`;
+        }
+
+        const progressSteps = document.querySelectorAll('.progress-step');
+        progressSteps.forEach((step, index) => {
+            const stepNumber = index + 1;
+            const stepElement = step.querySelector('div');
+
+            if (stepNumber < currentStep) {
+                // Completed step
+                stepElement.classList.remove('bg-gray-200', 'text-gray-600');
+                stepElement.classList.add('bg-primary', 'text-white');
+                stepElement.innerHTML = '<i class="ri-check-line"></i>';
+            } else if (stepNumber === currentStep) {
+                // Current step
+                stepElement.classList.remove('bg-gray-200', 'text-gray-600');
+                stepElement.classList.add('bg-primary', 'text-white');
+                stepElement.innerHTML = `<span>${stepNumber}</span>`;
+            } else {
+                // Future step
+                stepElement.classList.remove('bg-primary', 'text-white');
+                stepElement.classList.add('bg-gray-200', 'text-gray-600');
+                stepElement.innerHTML = `<span>${stepNumber}</span>`;
+            }
+        });
+    };
+
+    // Initialize first question
+    showQuestionSlide(1);
+
+    // Function to show a question slide
+    function showQuestionSlide(slideNumber) {
+        const questionSlides = document.querySelectorAll('.question-slide');
+
+        questionSlides.forEach((slide) => {
+            const currentSlideNumber = parseInt(slide.getAttribute('data-question'));
+
+            // First remove all classes
+            slide.classList.remove('active', 'prev');
+
+            // Set position based on relation to target slide
+            if (currentSlideNumber === slideNumber) {
+                // Target slide - make active
+                slide.classList.add('active');
+                slide.style.transform = 'translateX(0)';
+                slide.style.opacity = '1';
+                slide.style.pointerEvents = 'auto';
+            } else if (currentSlideNumber < slideNumber) {
+                // Slides before target - move left
+                slide.classList.add('prev');
+                slide.style.transform = 'translateX(-50px)';
+                slide.style.opacity = '0';
+                slide.style.pointerEvents = 'none';
+            } else {
+                // Slides after target - position right
+                slide.style.transform = 'translateX(50px)';
+                slide.style.opacity = '0';
+                slide.style.pointerEvents = 'none';
+            }
+        });
+
+        updateProgressIndicator(slideNumber);
+    }
+
+    // Function to show error message
+    function showErrorMessage(slide, message) {
+        // Remove any existing error messages
+        const existingError = slide.querySelector('.text-red-500');
+        if (existingError) {
+            existingError.remove();
+        }
+
+        // Create and show error message
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'text-red-500 mt-4 text-center';
+        errorMsg.textContent = message;
+        slide.appendChild(errorMsg);
+
+        // Remove the error message after 3 seconds
+        setTimeout(() => {
+            errorMsg.remove();
+        }, 3000);
+    }
+
+    // Add event listeners to next buttons
+    document.querySelectorAll('.next-question').forEach(button => {
+        button.addEventListener('click', function() {
+            const slide = this.closest('.question-slide');
+            const questionNumber = parseInt(slide.getAttribute('data-question'));
+            const selectedOption = document.querySelector(`input[name="question${questionNumber}"]:checked`);
+
+            // Check if an option is selected
+            if (!selectedOption) {
+                showErrorMessage(slide, 'Lütfen devam etmek için bir seçenek belirleyin.');
+                return;
+            }
+
+            // Show next question
+            showQuestionSlide(questionNumber + 1);
+        });
+    });
+
+    // Add event listeners to previous buttons
+    document.querySelectorAll('.prev-question').forEach(button => {
+        button.addEventListener('click', function() {
+            const slide = this.closest('.question-slide');
+            const questionNumber = parseInt(slide.getAttribute('data-question'));
+            showQuestionSlide(questionNumber - 1);
+        });
+    });
+
+    // Add event listener to show results button
+    document.getElementById('showResultsBtn').addEventListener('click', function() {
+        const slide = this.closest('.question-slide');
+        const questionNumber = parseInt(slide.getAttribute('data-question'));
+        const selectedOption = document.querySelector(`input[name="question${questionNumber}"]:checked`);
+
+        // Check if an option is selected
+        if (!selectedOption) {
+            showErrorMessage(slide, 'Lütfen devam etmek için bir seçenek belirleyin.');
+            return;
+        }
+
+        // Show loading indicator
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        loadingIndicator.innerHTML = `
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p class="text-lg font-medium">Mükemmel eşleşmeniz bulunuyor...</p>
+            </div>
+        `;
+        document.body.appendChild(loadingIndicator);
+
+        // Simulate API call with a timeout
+        setTimeout(() => {
+            // Remove loading indicator
+            document.body.removeChild(loadingIndicator);
+
+            // Show product recommendation
+            document.getElementById('productRecommendation').classList.remove('hidden');
+
+            // Scroll to the recommendation
+            document.getElementById('productRecommendation').scrollIntoView({
+                behavior: 'smooth'
+            });
+
+            // Update progress indicator to show completion
+            updateProgressIndicator(5);
+        }, 1500);
+    });
+});
+</script>
+@endpush
