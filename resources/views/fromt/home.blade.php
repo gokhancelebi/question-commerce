@@ -86,6 +86,21 @@
         position: relative;
         overflow: hidden;
     }
+
+    .animate-fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    .animate-fade-out {
+        animation: fadeOut 0.3s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+    }
 </style>
 @endsection
 
@@ -114,7 +129,9 @@
 <!-- Survey Section -->
 <section id="surveySection" class="py-16 px-4 bg-white hidden">
     <div class="container mx-auto max-w-4xl">
-        @include('fromt.partials.survey-questions')
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            @include('fromt.partials.survey-questions')
+        </div>
     </div>
 </section>
 
@@ -133,23 +150,263 @@ document.addEventListener('DOMContentLoaded', function() {
     const startSurveyBtn = document.getElementById('startSurveyBtn');
     const surveySection = document.getElementById('surveySection');
     const recommendationSection = document.getElementById('recommendationSection');
+    const progressBar = document.getElementById('progressBar');
 
+    // User answers
+    const userAnswers = {
+        question1: null,
+        question2: null,
+        question3: null,
+        question4: null,
+        question5: null
+    };
+
+    // Show survey section when start button is clicked
     startSurveyBtn.addEventListener('click', function() {
+        surveySection.classList.remove('hidden');
         window.scrollTo({
             top: surveySection.offsetTop - 100,
             behavior: 'smooth'
         });
-        surveySection.classList.remove('hidden');
     });
 
-    // Listen for survey completion event
-    window.addEventListener('surveyCompleted', function() {
-        recommendationSection.classList.remove('hidden');
-        window.scrollTo({
-            top: recommendationSection.offsetTop - 100,
-            behavior: 'smooth'
+    // Function to show error message
+    function showErrorMessage(slide, message) {
+        // Remove any existing error messages
+        const existingError = slide.querySelector('.text-red-500');
+        if (existingError) {
+            existingError.remove();
+        }
+
+        // Create and show error message
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'text-red-500 mt-4 text-center';
+        errorMsg.textContent = message;
+
+        // Add the error message
+        slide.appendChild(errorMsg);
+
+        // Remove the error message after 3 seconds
+        setTimeout(() => {
+            errorMsg.remove();
+        }, 3000);
+    }
+
+    // Function to show notification
+    function showNotification(message, type = 'success', isCheckout = false) {
+        const iconClass = type === 'success' ? 'ri-check-line' : type === 'info' ? 'ri-information-line' : 'ri-error-warning-line';
+        const iconColor = type === 'success' ? 'text-green-500' : type === 'info' ? 'text-primary' : 'text-red-500';
+
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-20 right-4 bg-white p-4 rounded-lg shadow-lg z-50 animate-fade-in';
+
+        if (isCheckout) {
+            notification.innerHTML = `
+            <div class="flex items-center">
+                <div class="w-8 h-8 flex items-center justify-center ${iconColor} mr-3">
+                    <i class="ri-secure-payment-line ri-lg"></i>
+                </div>
+                <div>
+                    <p class="font-medium">${message}</p>
+                    <p class="text-sm text-gray-600">Lütfen bekleyin...</p>
+                </div>
+            </div>
+            `;
+        } else {
+            notification.innerHTML = `
+            <div class="flex items-center">
+                <div class="w-8 h-8 flex items-center justify-center ${iconColor} mr-3">
+                    <i class="${iconClass} ri-lg"></i>
+                </div>
+                <div>
+                    <p class="font-medium">${message}</p>
+                </div>
+            </div>
+            `;
+        }
+
+        document.body.appendChild(notification);
+
+        // Remove notification after 3 seconds
+        setTimeout(() => {
+            notification.classList.add('animate-fade-out');
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    // Function to update progress indicator
+    function updateProgressIndicator(currentStep) {
+        // Update the progress bar
+        const width = (currentStep - 1) * 25;
+        progressBar.style.width = `${width}%`;
+
+        document.querySelectorAll('.progress-step').forEach((step, index) => {
+            const stepNumber = index + 1;
+            const stepElement = step.querySelector('div');
+
+            if (stepNumber < currentStep) {
+                // Completed step
+                stepElement.classList.remove('bg-gray-200', 'text-gray-600');
+                stepElement.classList.add('bg-primary', 'text-white');
+                stepElement.innerHTML = '<i class="ri-check-line"></i>';
+            } else if (stepNumber === currentStep) {
+                // Current step
+                stepElement.classList.remove('bg-gray-200', 'text-gray-600');
+                stepElement.classList.add('bg-primary', 'text-white');
+                stepElement.innerHTML = `<span>${stepNumber}</span>`;
+            } else {
+                // Future step
+                stepElement.classList.remove('bg-primary', 'text-white');
+                stepElement.classList.add('bg-gray-200', 'text-gray-600');
+                stepElement.innerHTML = `<span>${stepNumber}</span>`;
+            }
+        });
+    }
+
+    // Function to show a question slide
+    function showQuestionSlide(slideNumber) {
+        document.querySelectorAll('.question-slide').forEach((slide, index) => {
+            const currentSlideNumber = parseInt(slide.getAttribute('data-question'));
+
+            // First remove all classes
+            slide.classList.remove('active', 'prev');
+
+            // Set position based on relation to target slide
+            if (currentSlideNumber === slideNumber) {
+                // Target slide - make active
+                slide.classList.add('active');
+                slide.style.transform = 'translateX(0)';
+                slide.style.opacity = '1';
+                slide.style.pointerEvents = 'auto';
+            } else if (currentSlideNumber < slideNumber) {
+                // Slides before target - move left
+                slide.classList.add('prev');
+                slide.style.transform = 'translateX(-50px)';
+                slide.style.opacity = '0';
+                slide.style.pointerEvents = 'none';
+            } else {
+                // Slides after target - position right
+                slide.style.transform = 'translateX(50px)';
+                slide.style.opacity = '0';
+                slide.style.pointerEvents = 'none';
+            }
+        });
+
+        updateProgressIndicator(slideNumber);
+    }
+
+    // Add event listeners to radio buttons
+    document.querySelectorAll('.custom-radio input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const questionNumber = this.name.replace('question', '');
+            userAnswers[this.name] = this.value;
         });
     });
+
+    // Add event listeners to next buttons
+    document.querySelectorAll('.next-question').forEach(button => {
+        button.addEventListener('click', function() {
+            const slide = this.closest('.question-slide');
+            const questionNumber = parseInt(slide.getAttribute('data-question'));
+            const selectedOption = document.querySelector(`input[name="question${questionNumber}"]:checked`);
+
+            // Check if an option is selected
+            if (!selectedOption) {
+                showErrorMessage(slide, 'Lütfen devam etmek için bir seçenek belirleyin.');
+                return;
+            }
+
+            // Store the answer
+            userAnswers[`question${questionNumber}`] = selectedOption.value;
+
+            // Show next question
+            const nextQuestionNumber = questionNumber + 1;
+            showQuestionSlide(nextQuestionNumber);
+        });
+    });
+
+    // Add event listeners to previous buttons
+    document.querySelectorAll('.prev-question').forEach(button => {
+        button.addEventListener('click', function() {
+            const slide = this.closest('.question-slide');
+            const questionNumber = parseInt(slide.getAttribute('data-question'));
+
+            // Show previous question
+            showQuestionSlide(questionNumber - 1);
+        });
+    });
+
+    // Add event listener to show results button
+    document.getElementById('showResultsBtn').addEventListener('click', function() {
+        const slide = this.closest('.question-slide');
+        const questionNumber = parseInt(slide.getAttribute('data-question'));
+        const selectedOption = document.querySelector(`input[name="question${questionNumber}"]:checked`);
+
+        // Check if an option is selected
+        if (!selectedOption) {
+            showErrorMessage(slide, 'Lütfen devam etmek için bir seçenek belirleyin.');
+            return;
+        }
+
+        // Store the answer
+        userAnswers[`question${questionNumber}`] = selectedOption.value;
+
+        // Show loading indicator
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        loadingIndicator.innerHTML = `
+            <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+                <div class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p class="text-lg font-medium">Mükemmel eşleşmeniz bulunuyor...</p>
+            </div>
+        `;
+        document.body.appendChild(loadingIndicator);
+
+        // Send the answers to the backend
+        fetch('{{ route('survey.process') }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(userAnswers)
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Remove loading indicator
+            document.body.removeChild(loadingIndicator);
+
+            // Show product recommendation
+            recommendationSection.classList.remove('hidden');
+
+            // Scroll to the recommendation
+            window.scrollTo({
+                top: recommendationSection.offsetTop - 100,
+                behavior: 'smooth'
+            });
+
+            // Update progress indicator to show completion
+            updateProgressIndicator(5);
+
+            // Trigger custom event for survey completion
+            window.dispatchEvent(new CustomEvent('surveyCompleted'));
+        })
+        .catch(error => {
+            // Remove loading indicator
+            document.body.removeChild(loadingIndicator);
+            console.error('Error:', error);
+
+            // Show error notification
+            showNotification('Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
+        });
+    });
+
+    // Initialize the first question as active if survey section is visible
+    if (!surveySection.classList.contains('hidden')) {
+        showQuestionSlide(1);
+    }
 });
 </script>
 @endpush
