@@ -57,14 +57,6 @@
                     </a>
                 </li>
 
-                <!-- Contact -->
-                <li class="nav-item">
-                    <a href="{{ route('admin.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-envelope"></i>
-                        <p>İletişim</p>
-                    </a>
-                </li>
-
                 <!-- Pages -->
                 <li class="nav-item">
                     <a href="{{ route('admin.pages.index') }}" class="nav-link {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
