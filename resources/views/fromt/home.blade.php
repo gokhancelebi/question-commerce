@@ -238,6 +238,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Collect all answers
+        const answers = {};
+        document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+            answers[radio.name] = radio.value;
+        });
+
         // Show loading indicator
         const loadingIndicator = document.createElement('div');
         loadingIndicator.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
@@ -253,22 +259,97 @@ document.addEventListener('DOMContentLoaded', function() {
         const questionForm = document.querySelector('.bg-white.rounded-lg.shadow-md');
         questionForm.style.display = 'none';
 
-        // Simulate API call with a timeout
-        setTimeout(() => {
+        // Make AJAX call to process survey
+        fetch('/survey/process', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(answers)
+        })
+        .then(response => response.json())
+        .then(data => {
             // Remove loading indicator
             document.body.removeChild(loadingIndicator);
 
-            // Show product recommendation
-            document.getElementById('productRecommendation').classList.remove('hidden');
+            if (data.success && data.products.length > 0) {
+                // Get the first (best) match
+                const bestMatch = data.products[0];
 
-            // Scroll to the recommendation
-            document.getElementById('productRecommendation').scrollIntoView({
-                behavior: 'smooth'
-            });
+                // Update the product recommendation HTML
+                const productRecommendation = document.getElementById('productRecommendation');
+                productRecommendation.innerHTML = `
+                    <h3 class="text-2xl font-bold text-center mb-6">Mükemmel Eşleşmeniz</h3>
+                    <div class="bg-white rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl">
+                        <div class="aspect-w-16 aspect-h-9 relative h-64">
+                            <img src="${bestMatch.image || 'https://via.placeholder.com/800x600'}"
+                                alt="${bestMatch.name}" class="w-full h-full object-cover object-top">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h4 class="text-xl font-bold">${bestMatch.name}</h4>
+                                <span class="text-xl font-bold text-primary">${bestMatch.price.toLocaleString('tr-TR', { minimumFractionDigits: 2 })} TL</span>
+                            </div>
+                            <p class="text-gray-600 mb-6">${bestMatch.description}</p>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                ${bestMatch.external_url ? `
+                                    <a href="${bestMatch.external_url}" target="_blank"
+                                        class="bg-primary text-white px-6 py-3 !rounded-button hover:bg-opacity-90 transition-all flex-1 whitespace-nowrap flex items-center justify-center">
+                                        <div class="w-5 h-5 mr-2 flex items-center justify-center">
+                                            <i class="ri-shopping-cart-line"></i>
+                                        </div>
+                                        Satın Al
+                                    </a>
+                                ` : `
+                                    <button class="bg-primary text-white px-6 py-3 !rounded-button hover:bg-opacity-90 transition-all flex-1 whitespace-nowrap flex items-center justify-center">
+                                        <div class="w-5 h-5 mr-2 flex items-center justify-center">
+                                            <i class="ri-shopping-cart-line"></i>
+                                        </div>
+                                        Sepete Ekle
+                                    </button>
+                                `}
+                                <button onclick="window.location.reload()"
+                                    class="border border-primary text-primary px-6 py-3 !rounded-button hover:bg-primary hover:bg-opacity-5 transition-all flex-1 whitespace-nowrap flex items-center justify-center">
+                                    Yeni Test Başlat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Show the recommendation
+                productRecommendation.classList.remove('hidden');
+                productRecommendation.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                // Handle error or no products found
+                const productRecommendation = document.getElementById('productRecommendation');
+                productRecommendation.innerHTML = `
+                    <div class="text-center p-8 bg-white rounded-lg shadow-md">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Üzgünüz!</h3>
+                        <p class="text-gray-600">Şu anda kriterlere uygun bir ürün bulamadık.</p>
+                        <button onclick="window.location.reload()"
+                            class="mt-6 bg-primary text-white px-6 py-3 !rounded-button hover:bg-opacity-90 transition-all">
+                            Tekrar Deneyin
+                        </button>
+                    </div>
+                `;
+                productRecommendation.classList.remove('hidden');
+                productRecommendation.scrollIntoView({ behavior: 'smooth' });
+            }
 
             // Update progress indicator to show completion
             updateProgressIndicator(5);
-        }, 1500);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Remove loading indicator
+            document.body.removeChild(loadingIndicator);
+            // Show error message
+            showErrorMessage(slide, 'Bir hata oluştu. Lütfen tekrar deneyin.');
+            // Show the form again
+            questionForm.style.display = 'block';
+        });
     });
 });
 </script>
