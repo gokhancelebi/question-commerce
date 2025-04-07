@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Models\Question;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -14,7 +15,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('fromt.home');
+        $questions = Question::with('answers')
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->get();
+
+        return view('fromt.home', compact('questions'));
     }
 
     /**

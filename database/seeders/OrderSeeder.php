@@ -20,11 +20,11 @@ class OrderSeeder extends Seeder
         foreach ($users as $user) {
             // Create 1-3 orders for each user
             $orderCount = rand(1, 3);
-            
+
             for ($i = 0; $i < $orderCount; $i++) {
                 // Get shipping info from user
                 $shippingInfo = $user->getDefaultShippingInfo();
-                
+
                 $order = new Order();
                 $order->user_id = $user->id;
                 $order->total_amount = 0;
@@ -32,9 +32,10 @@ class OrderSeeder extends Seeder
                 $order->fill($shippingInfo);
                 $order->save();
 
-                // Add 1-5 random products to order
-                $orderProducts = $products->random(rand(1, 5));
-                
+                // Add 1-5 random products to order (or less if fewer products exist)
+                $maxProducts = min(5, $products->count());
+                $orderProducts = $products->random(rand(1, $maxProducts));
+
                 foreach ($orderProducts as $product) {
                     $quantity = rand(1, 3);
                     $order->addItem($product, $quantity);
