@@ -236,9 +236,6 @@
                         </li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Nasıl
                                 Çalışır</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">Müşteri
-                                Yorumları</a>
-                        </li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition-colors">İletişim</a>
                         </li>
                     </ul>
