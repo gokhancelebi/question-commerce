@@ -72,7 +72,7 @@
                         <p>
                             İletişim Mesajları
                             @php
-                                $unreadCount = \App\Models\Contact::where('is_read', false)->count();
+                                $unreadCount = \App\Models\Contact::where('status', 'pending')->count();
                             @endphp
                             @if($unreadCount > 0)
                                 <span class="badge badge-warning right">{{ $unreadCount }}</span>

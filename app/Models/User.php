@@ -92,4 +92,12 @@ class User extends Authenticatable
             !empty($this->default_district) &&
             !empty($this->default_address);
     }
+
+    /**
+     * Check if user is an admin
+     */
+    public function getIsAdminAttribute(): bool
+    {
+        return $this->role === 'admin';
+    }
 }
