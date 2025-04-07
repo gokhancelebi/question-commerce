@@ -38,8 +38,11 @@ class ProductMatchController extends Controller
             'is_active' => 'boolean'
         ]);
 
-        // Extract only the answer IDs from the answer_combinations array
-        $answerIds = array_values($validated['answer_combinations']);
+        // Extract and convert answer IDs to integers
+        $answerIds = collect($validated['answer_combinations'])
+            ->map(fn($id) => (int) $id)
+            ->values()
+            ->all();
 
         ProductMatch::create([
             'product_id' => $validated['product_id'],
@@ -71,8 +74,11 @@ class ProductMatchController extends Controller
             'is_active' => 'boolean'
         ]);
 
-        // Extract only the answer IDs from the answer_combinations array
-        $answerIds = array_values($validated['answer_combinations']);
+        // Extract and convert answer IDs to integers
+        $answerIds = collect($validated['answer_combinations'])
+            ->map(fn($id) => (int) $id)
+            ->values()
+            ->all();
 
         $productMatch->update([
             'product_id' => $validated['product_id'],

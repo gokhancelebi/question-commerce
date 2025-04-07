@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('quantity')->default(0);
             $table->string('featured_image')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->text('external_url')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
