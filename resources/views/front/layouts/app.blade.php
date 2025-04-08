@@ -6,156 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Ürün Öneri Sistemi</title>
-    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#E37D10',
-                        secondary: ''
-                    },
-                    borderRadius: {
-                        'none': '0px',
-                        'sm': '4px',
-                        DEFAULT: '8px',
-                        'md': '12px',
-                        'lg': '16px',
-                        'xl': '20px',
-                        '2xl': '24px',
-                        '3xl': '32px',
-                        'full': '9999px',
-                        'button': '8px'
-                    }
-                }
-            }
-        }
-    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
-    <style>
-        :where([class^="ri-"])::before {
-            content: "\f3c2";
-        }
+    @vite('resources/css/app.css')
 
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-
-        .sticky-header {
-            height: 80px;
-            background-color: white;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            transition: height 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .sticky-header.scrolled {
-            height: 60px;
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
-
-        .progress-step {
-            position: relative;
-            z-index: 1;
-        }
-
-        .question-slide {
-            position: absolute;
-            width: 100%;
-            opacity: 0;
-            transform: translateX(50px);
-            transition: all 0.5s ease;
-            pointer-events: none;
-        }
-
-        .question-slide.active {
-            position: relative;
-            opacity: 1;
-            transform: translateX(0);
-            pointer-events: auto;
-        }
-
-        .question-slide.prev {
-            transform: translateX(-50px);
-        }
-
-        .custom-radio {
-            position: relative;
-        }
-
-        .custom-radio input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .custom-radio .radio-indicator {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            height: 24px;
-            width: 24px;
-            background-color: #fff;
-            border: 2px solid #e2e8f0;
-            border-radius: 50%;
-            transition: all 0.2s ease;
-        }
-
-        .custom-radio input[type="radio"]:checked~.radio-indicator {
-            background-color: #fff;
-            border-color: #E37D10;
-        }
-
-        .custom-radio input[type="radio"]:checked~.radio-indicator:after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #E37D10;
-        }
-
-        .custom-radio input[type="radio"]:checked~.option-card {
-            border-color: #E37D10;
-            background-color: rgba(227, 125, 16, 0.05);
-        }
-
-        .option-card {
-            transition: all 0.2s ease;
-            position: relative;
-            z-index: 1;
-        }
-
-        .option-card:hover {
-            background-color: rgba(227, 125, 16, 0.03);
-            z-index: 2;
-        }
-
-        #questionSlider {
-            min-height: 350px;
-            position: relative;
-            overflow: hidden;
-        }
-    </style>
 </head>
 
 <body class="bg-gray-50">
@@ -480,6 +338,7 @@
             </div>
         </div>
     </div>
+    @vite('resources/js/app.js')
     <script>
         // Mock data for questions and options
         const questions = [{
