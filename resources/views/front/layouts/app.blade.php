@@ -50,6 +50,26 @@
         .user-dropdown:hover::after {
             display: block;
         }
+
+        #cartModal .bg-white {
+            display: flex;
+            flex-direction: column;
+            max-height: 75vh;
+        }
+        #cartWithItemsState {
+            display: flex;
+            flex-direction: column;
+        }
+        .overflow-y-auto {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        #cartModal .border-t {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            z-index: 10;
+        }
     </style>
 
 </head>
@@ -211,9 +231,9 @@
     @endguest
     <!-- Cart Modal HTML -->
     <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 overflow-hidden flex flex-col" style="max-height: 80vh;">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 overflow-hidden flex flex-col" style="max-height: 75vh;">
             <!-- Fixed Header -->
-            <div class="flex justify-between items-center border-b p-4 bg-white">
+            <div class="flex justify-between items-center border-b p-4 bg-white flex-shrink-0">
                 <h3 class="text-xl font-semibold">Sepetiniz</h3>
                 <button id="closeCartModal" class="text-gray-400 hover:text-gray-600">
                     <div class="w-6 h-6 flex items-center justify-center">
@@ -234,24 +254,24 @@
                 </button>
             </div>
             <!-- Cart With Items State -->
-            <div id="cartWithItemsState" class="flex-1 flex flex-col hidden">
+            <div id="cartWithItemsState" class="flex-1 flex flex-col hidden overflow-hidden">
                 <!-- Scrollable Products Area -->
-                <div class="overflow-y-auto flex-1" style="max-height: 50vh;">
+                <div class="overflow-y-auto flex-grow" style="max-height: 100%;">
                     <div id="cartItemsList" class="p-4 divide-y divide-gray-100">
                         <!-- Cart items will be dynamically added here -->
                     </div>
                 </div>
                 <!-- Fixed Footer -->
-                <div class="border-t p-4 bg-gray-50">
+                <div class="border-t p-4 bg-gray-50 flex-shrink-0">
                     <div class="flex justify-between mb-2">
                         <span class="text-gray-600">Ara Toplam:</span>
                         <span id="cartSubtotal" class="font-medium">0,00 TL</span>
                     </div>
-                    <div class="flex justify-between mb-4">
+                    <div class="flex justify-between mb-2">
                         <span class="text-gray-600">Kargo:</span>
                         <span id="cartShipping" class="font-medium">0,00 TL</span>
                     </div>
-                    <div class="flex justify-between mb-6 text-lg font-bold">
+                    <div class="flex justify-between mb-4 text-lg font-bold">
                         <span>Toplam:</span>
                         <span id="cartTotal" class="text-primary">0,00 TL</span>
                     </div>
@@ -974,15 +994,6 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;  
   overflow: hidden;
-}
-#cartModal .bg-white {
-  display: flex;
-  flex-direction: column;
-}
-#cartWithItemsState {
-  max-height: calc(80vh - 60px); /* Account for header */
-  display: flex;
-  flex-direction: column;
 }
 `;
         document.head.appendChild(style);
