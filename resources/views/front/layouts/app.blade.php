@@ -826,22 +826,37 @@
             });
         });
         checkoutBtn.addEventListener('click', function() {
-            if (cartItems.length === 0) {
-                showNotification('Sepetinizde ürün bulunmamaktadır', 'error');
-                return;
-            }
-            // Show checkout notification
-            showNotification('Ödeme sayfasına yönlendiriliyorsunuz', 'success', true);
-            // Close cart modal
-            cartModal.classList.add('hidden');
-            document.body.style.overflow = ''; // Enable scrolling
-            // Simulate redirect to checkout page after 2 seconds
-            setTimeout(() => {
-                showNotification('Ödeme işlemi başarıyla tamamlandı', 'success');
-                // Clear cart after successful checkout
-                cartItems.length = 0;
-                updateCartUI();
-            }, 2000);
+            // Check if cart is empty using the session data instead of local cartItems array
+            fetch('/cart-data', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.cartItems.length === 0) {
+                    showNotification('Sepetinizde ürün bulunmamaktadır', 'error');
+                    return;
+                }
+                
+                // Show checkout notification
+                showNotification('Ödeme sayfasına yönlendiriliyorsunuz', 'success', true);
+                
+                // Close cart modal
+                cartModal.classList.add('hidden');
+                document.body.style.overflow = ''; // Enable scrolling
+                
+                // Redirect to checkout page
+                setTimeout(() => {
+                    window.location.href = '{{ route('cart.index') }}';
+                }, 1500);
+            })
+            .catch(error => {
+                console.error('Error fetching cart data:', error);
+                showNotification('Bir hata oluştu', 'error');
+            });
         });
         // For the "Add to Cart" functionality in product recommendations
         document.querySelectorAll('#productRecommendation button').forEach(button => {
