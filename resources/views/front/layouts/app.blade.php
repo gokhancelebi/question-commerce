@@ -112,9 +112,18 @@
                 </a>
                 
                 @guest
-                <a href="{{ route('login', ['redirect_back' => url()->current()]) }}" 
-                    class="hidden md:block bg-primary text-white px-4 py-2 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap">Giriş
-                    / Kayıt</a>
+                <div class="hidden md:flex items-center space-x-3">
+                    <a href="{{ route('login', ['redirect_back' => url()->current()]) }}" 
+                        class="text-gray-800 hover:text-primary transition-colors whitespace-nowrap">Giriş</a>
+                    <span class="text-gray-300">|</span>
+                    <a href="{{ route('register', ['redirect_back' => url()->current()]) }}" 
+                        class="text-gray-800 hover:text-primary transition-colors whitespace-nowrap">Kayıt</a>
+                </div>
+                <a href="{{ route('login', ['redirect_back' => url()->current()]) }}" class="text-gray-800 hover:text-primary md:hidden">
+                    <div class="w-10 h-10 flex items-center justify-center">
+                        <i class="ri-user-line ri-lg"></i>
+                    </div>
+                </a>
                 @endguest
                 
                 <button class="md:hidden text-gray-800">
@@ -195,120 +204,7 @@
     
     @guest
     <!-- Modal HTML for login/register and cart -->
-    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
-            <div class="flex border-b">
-                <button id="loginTab"
-                    class="flex-1 py-4 font-medium text-center border-b-2 border-primary text-primary">Giriş</button>
-                <button id="registerTab"
-                    class="flex-1 py-4 font-medium text-center border-b-2 border-transparent text-gray-500">Kayıt
-                    Ol</button>
-                <button id="closeAuthModal" class="px-4 text-gray-400 hover:text-gray-600">
-                    <div class="w-6 h-6 flex items-center justify-center">
-                        <i class="ri-close-line ri-lg"></i>
-                    </div>
-                </button>
-            </div>
-            <!-- Login Form -->
-            <div id="loginForm" class="p-6">
-                <form id="ajaxLoginForm" action="{{ route('login') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <div class="login-error-message text-red-500 hidden mb-4"></div>
-                    <div>
-                        <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-1">E-posta /
-                            Kullanıcı
-                            Adı</label>
-                        <input type="email" id="loginEmail" name="email"
-                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
-                            placeholder="E-posta adresinizi girin">
-                    </div>
-                    <div>
-                        <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
-                        <input type="password" id="loginPassword" name="password"
-                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
-                            placeholder="Şifrenizi girin">
-                    </div>
-                    <div class="flex items-center">
-                        <input type="checkbox" id="rememberMe" name="remember"
-                            class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
-                        <label for="rememberMe" class="ml-2 block text-sm text-gray-700">Beni Hatırla</label>
-                        <a href="{{ route('password.request') }}" class="ml-auto text-sm text-primary hover:underline">Şifremi Unuttum</a>
-                    </div>
-                    <div>
-                        <button type="submit"
-                            class="w-full bg-primary text-white py-2 !rounded-button hover:bg-opacity-90 transition-all flex items-center justify-center">
-                            <i class="ri-login-box-line mr-2"></i>
-                            Giriş Yap
-                        </button>
-                    </div>
-                    <div class="text-center mt-4">
-                        <a href="{{ route('login') }}" class="text-primary hover:underline text-sm">Giriş sayfasına git</a>
-                    </div>
-                </form>
-            </div>
-            <!-- Register Form -->
-            <div id="registerForm" class="p-6 hidden">
-                <form id="ajaxRegisterForm" action="{{ route('register') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <div class="register-error-message text-red-500 hidden mb-4"></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">Ad</label>
-                            <input type="text" id="firstName" name="name"
-                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
-                                placeholder="Adınız">
-                        </div>
-                        <div>
-                            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Soyad</label>
-                            <input type="text" id="lastName" name="surname"
-                                class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
-                                placeholder="Soyadınız">
-                        </div>
-                    </div>
-                    <div>
-                        <label for="registerEmail"
-                            class="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
-                        <input type="email" id="registerEmail" name="email"
-                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
-                            placeholder="E-posta adresiniz">
-                    </div>
-                    <div>
-                        <label for="registerPassword"
-                            class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
-                        <input type="password" id="registerPassword" name="password"
-                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
-                            placeholder="Şifreniz (en az 8 karakter)">
-                    </div>
-                    <div>
-                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Şifre
-                            Tekrar</label>
-                        <input type="password" id="confirmPassword" name="password_confirmation"
-                            class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
-                            placeholder="Şifrenizi tekrar girin">
-                    </div>
-                    <div class="flex items-start">
-                        <input type="checkbox" id="termsAccept" name="terms" value="agree"
-                            class="h-4 w-4 mt-1 text-primary focus:ring-primary border-gray-300 rounded">
-                        <label for="termsAccept" class="ml-2 block text-sm text-gray-700">
-                            <a href="#" class="text-primary hover:underline">Kullanım Şartları</a> ve <a
-                                href="#" class="text-primary hover:underline">Gizlilik Politikası</a>'nı kabul
-                            ediyorum
-                        </label>
-                    </div>
-                    <div>
-                        <button type="submit"
-                            class="w-full bg-primary text-white py-2 !rounded-button hover:bg-opacity-90 transition-all flex items-center justify-center">
-                            <i class="ri-user-add-line mr-2"></i>
-                            Kayıt Ol
-                        </button>
-                    </div>
-                    <div class="text-center mt-4">
-                        <a href="{{ route('register') }}" class="text-primary hover:underline text-sm">Kayıt sayfasına git</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <!-- Remove this entire auth modal section -->
     @endguest
     <!-- Cart Modal HTML -->
     <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
@@ -525,7 +421,7 @@
         };
         // Cart items array
         const cartItems = [];
-        // DOM Elements
+        // Elements for questions and results
         const progressSteps = document.querySelectorAll('.progress-step');
         const progressLines = document.querySelectorAll('.progress-line');
         const questionSlides = document.querySelectorAll('.question-slide');
@@ -533,14 +429,7 @@
         const prevButtons = document.querySelectorAll('.prev-question');
         const showResultsBtn = document.getElementById('showResultsBtn');
         const productRecommendation = document.getElementById('productRecommendation');
-        // Auth modal elements
-        const authModal = document.getElementById('authModal');
-        const loginTab = document.getElementById('loginTab');
-        const registerTab = document.getElementById('registerTab');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const closeAuthModal = document.getElementById('closeAuthModal');
-        const loginRegisterBtn = document.getElementById('loginRegisterBtn');
+        
         // Cart modal elements
         const cartModal = document.getElementById('cartModal');
         const closeCartModal = document.getElementById('closeCartModal');
@@ -848,38 +737,6 @@
                 // Update progress indicator to show completion
                 updateProgressIndicator(5);
             }, 1500);
-        });
-        // Auth modal functionality
-        loginRegisterBtn.addEventListener('click', function() {
-            authModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
-        });
-        closeAuthModal.addEventListener('click', function() {
-            authModal.classList.add('hidden');
-            document.body.style.overflow = ''; // Enable scrolling
-        });
-        authModal.addEventListener('click', function(e) {
-            if (e.target === authModal) {
-                authModal.classList.add('hidden');
-                document.body.style.overflow = ''; // Enable scrolling
-            }
-        });
-        // Switch tabs
-        loginTab.addEventListener('click', function() {
-            loginTab.classList.add('border-primary', 'text-primary');
-            registerTab.classList.remove('border-primary', 'text-primary');
-            loginTab.classList.remove('border-transparent', 'text-gray-500');
-            registerTab.classList.add('border-transparent', 'text-gray-500');
-            loginForm.classList.remove('hidden');
-            registerForm.classList.add('hidden');
-        });
-        registerTab.addEventListener('click', function() {
-            registerTab.classList.add('border-primary', 'text-primary');
-            loginTab.classList.remove('border-primary', 'text-primary');
-            registerTab.classList.remove('border-transparent', 'text-gray-500');
-            loginTab.classList.add('border-transparent', 'text-gray-500');
-            registerForm.classList.remove('hidden');
-            loginForm.classList.add('hidden');
         });
         // Cart modal functionality
         cartButton.addEventListener('click', function(e) {
