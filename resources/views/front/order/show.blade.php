@@ -45,6 +45,12 @@
                 <p class="text-sm text-gray-500">Toplam Tutar</p>
                 <p class="mt-1 font-medium">{{ number_format($order->total_amount, 2, ',', '.') }} TL</p>
             </div>
+            @if($order->shipping_code)
+            <div>
+                <p class="text-sm text-gray-500">Kargo Kodu</p>
+                <p class="mt-1 font-medium">{{ $order->shipping_code }}</p>
+            </div>
+            @endif
         </div>
     </div>
 </div>
@@ -88,8 +94,16 @@
         @endforeach
     </div>
     <div class="p-4 bg-gray-50 border-t">
-        <div class="flex justify-between items-center">
-            <span class="font-medium">Toplam</span>
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-700">Ürünler Toplamı</span>
+            <span class="font-medium">{{ number_format($order->items_total, 2, ',', '.') }} TL</span>
+        </div>
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-sm text-gray-700">Kargo Ücreti</span>
+            <span class="font-medium">{{ number_format($order->shipping_cost ?? 0, 2, ',', '.') }} TL</span>
+        </div>
+        <div class="flex justify-between items-center pt-2 border-t">
+            <span class="font-medium">Genel Toplam</span>
             <span class="font-bold text-lg text-primary">{{ number_format($order->total_amount, 2, ',', '.') }} TL</span>
         </div>
     </div>

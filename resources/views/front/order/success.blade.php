@@ -76,9 +76,27 @@
                 
                 <div class="border-t border-gray-200 pt-4">
                     <div class="flex justify-between text-base mb-2">
-                        <p class="text-gray-600">Toplam Tutar</p>
+                        <p class="text-gray-600">Ürünler Toplamı</p>
+                        <p class="font-medium">{{ number_format($order->items_total, 2, ',', '.') }} TL</p>
+                    </div>
+                    <div class="flex justify-between text-base mb-2">
+                        <p class="text-gray-600">Kargo Ücreti</p>
+                        <p class="font-medium">{{ number_format($order->shipping_cost ?? 0, 2, ',', '.') }} TL</p>
+                    </div>
+                    <div class="flex justify-between text-base mb-2 pt-2 border-t">
+                        <p class="text-gray-800 font-medium">Genel Toplam</p>
                         <p class="font-medium text-lg text-primary">{{ number_format($order->total_amount, 2, ',', '.') }} TL</p>
                     </div>
+                    
+                    @if($order->shipping_code)
+                    <div class="mt-4 p-3 bg-blue-50 rounded-md">
+                        <p class="flex items-center text-blue-800">
+                            <i class="ri-truck-line mr-2"></i>
+                            <span class="font-medium">Kargo Kodu:</span>
+                            <span class="ml-2">{{ $order->shipping_code }}</span>
+                        </p>
+                    </div>
+                    @endif
                 </div>
             </div>
             
