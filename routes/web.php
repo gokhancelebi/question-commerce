@@ -27,6 +27,10 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [LoginController::class, 'login']);
     Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('register', [RegisterController::class, 'register']);
+    
+    // AJAX authentication routes
+    Route::post('ajax/login', [LoginController::class, 'ajaxLogin'])->name('ajax.login');
+    Route::post('ajax/register', [RegisterController::class, 'ajaxRegister'])->name('ajax.register');
 });
 
 // Auth routes (only accessible when logged in)

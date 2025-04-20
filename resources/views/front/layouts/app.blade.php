@@ -14,6 +14,18 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
     @vite('resources/css/app.css')
 
+    <style>
+        /* Dropdown menu fixes */
+        .user-dropdown-menu {
+            display: none;
+            pointer-events: auto;
+        }
+        
+        .user-dropdown:hover .user-dropdown-menu {
+            display: block;
+        }
+    </style>
+
 </head>
 
 <body class="bg-gray-50">
@@ -33,11 +45,39 @@
                     class="text-gray-800 hover:text-primary transition-colors whitespace-nowrap">İletişim</a>
             </nav>
             <div class="flex items-center space-x-4">
-                <a href="#" class="text-gray-800 hover:text-primary">
+                @auth
+                <div class="relative user-dropdown">
+                    <button class="text-gray-800 hover:text-primary flex items-center">
+                        <div class="w-10 h-10 flex items-center justify-center">
+                            <i class="ri-user-line ri-lg"></i>
+                        </div>
+                        <span class="ml-1 hidden sm:inline">{{ Auth::user()->name }}</span>
+                        <i class="ri-arrow-down-s-line ml-1"></i>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 user-dropdown-menu">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="ri-user-settings-line mr-2"></i> Hesabım
+                        </a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="ri-history-line mr-2"></i> Siparişlerim
+                        </a>
+                        <div class="border-t border-gray-100"></div>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="ri-logout-box-line mr-2"></i> Çıkış Yap
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                @else
+                <a href="{{ route('login', ['redirect_back' => url()->current()]) }}" class="text-gray-800 hover:text-primary">
                     <div class="w-10 h-10 flex items-center justify-center">
                         <i class="ri-user-line ri-lg"></i>
                     </div>
                 </a>
+                @endauth
+                
                 <a href="#" id="cartButton" class="text-gray-800 hover:text-primary relative">
                     <div class="w-10 h-10 flex items-center justify-center">
                         <i class="ri-shopping-cart-line ri-lg"></i>
@@ -45,9 +85,13 @@
                     <span id="cartCount"
                         class="absolute -top-1 -right-1 bg-primary text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">0</span>
                 </a>
-                <button id="loginRegisterBtn"
+                
+                @guest
+                <a href="{{ route('login', ['redirect_back' => url()->current()]) }}" 
                     class="hidden md:block bg-primary text-white px-4 py-2 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap">Giriş
-                    / Kayıt</button>
+                    / Kayıt</a>
+                @endguest
+                
                 <button class="md:hidden text-gray-800">
                     <div class="w-10 h-10 flex items-center justify-center">
                         <i class="ri-menu-line ri-lg"></i>
@@ -123,6 +167,8 @@
             </div>
         </div>
     </footer>
+    
+    @guest
     <!-- Modal HTML for login/register and cart -->
     <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
@@ -140,77 +186,56 @@
             </div>
             <!-- Login Form -->
             <div id="loginForm" class="p-6">
-                <form class="space-y-4">
+                <form id="ajaxLoginForm" action="{{ route('login') }}" method="POST" class="space-y-4">
+                    @csrf
+                    <div class="login-error-message text-red-500 hidden mb-4"></div>
                     <div>
                         <label for="loginEmail" class="block text-sm font-medium text-gray-700 mb-1">E-posta /
                             Kullanıcı
                             Adı</label>
-                        <input type="text" id="loginEmail"
+                        <input type="email" id="loginEmail" name="email"
                             class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
                             placeholder="E-posta adresinizi girin">
                     </div>
                     <div>
                         <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
-                        <input type="password" id="loginPassword"
+                        <input type="password" id="loginPassword" name="password"
                             class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
                             placeholder="Şifrenizi girin">
                     </div>
                     <div class="flex items-center">
-                        <input type="checkbox" id="rememberMe"
+                        <input type="checkbox" id="rememberMe" name="remember"
                             class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
                         <label for="rememberMe" class="ml-2 block text-sm text-gray-700">Beni Hatırla</label>
-                        <a href="#" class="ml-auto text-sm text-primary hover:underline">Şifremi Unuttum</a>
+                        <a href="{{ route('password.request') }}" class="ml-auto text-sm text-primary hover:underline">Şifremi Unuttum</a>
                     </div>
-                    <button type="submit"
-                        class="w-full bg-primary text-white py-2 !rounded-button hover:bg-opacity-90 transition-all">Giriş
-                        Yap</button>
+                    <div>
+                        <button type="submit"
+                            class="w-full bg-primary text-white py-2 !rounded-button hover:bg-opacity-90 transition-all flex items-center justify-center">
+                            <i class="ri-login-box-line mr-2"></i>
+                            Giriş Yap
+                        </button>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="{{ route('login') }}" class="text-primary hover:underline text-sm">Giriş sayfasına git</a>
+                    </div>
                 </form>
-                <!--
-                <div class="mt-6">
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500">veya şununla devam et</span>
-                        </div>
-                    </div>
-                    <div class="mt-6 grid grid-cols-3 gap-3">
-                        <button
-                            class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50">
-                            <div class="w-5 h-5 flex items-center justify-center">
-                                <i class="ri-google-fill text-red-500"></i>
-                            </div>
-                        </button>
-                        <button
-                            class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50">
-                            <div class="w-5 h-5 flex items-center justify-center">
-                                <i class="ri-facebook-fill text-blue-600"></i>
-                            </div>
-                        </button>
-                        <button
-                            class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50">
-                            <div class="w-5 h-5 flex items-center justify-center">
-                                <i class="ri-apple-fill"></i>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-            -->
             </div>
             <!-- Register Form -->
             <div id="registerForm" class="p-6 hidden">
-                <form class="space-y-4">
+                <form id="ajaxRegisterForm" action="{{ route('register') }}" method="POST" class="space-y-4">
+                    @csrf
+                    <div class="register-error-message text-red-500 hidden mb-4"></div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">Ad</label>
-                            <input type="text" id="firstName"
+                            <input type="text" id="firstName" name="name"
                                 class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
                                 placeholder="Adınız">
                         </div>
                         <div>
                             <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Soyad</label>
-                            <input type="text" id="lastName"
+                            <input type="text" id="lastName" name="surname"
                                 class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
                                 placeholder="Soyadınız">
                         </div>
@@ -218,26 +243,26 @@
                     <div>
                         <label for="registerEmail"
                             class="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
-                        <input type="email" id="registerEmail"
+                        <input type="email" id="registerEmail" name="email"
                             class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
                             placeholder="E-posta adresiniz">
                     </div>
                     <div>
                         <label for="registerPassword"
                             class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
-                        <input type="password" id="registerPassword"
+                        <input type="password" id="registerPassword" name="password"
                             class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
                             placeholder="Şifreniz (en az 8 karakter)">
                     </div>
                     <div>
                         <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Şifre
                             Tekrar</label>
-                        <input type="password" id="confirmPassword"
+                        <input type="password" id="confirmPassword" name="password_confirmation"
                             class="w-full px-4 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary"
                             placeholder="Şifrenizi tekrar girin">
                     </div>
                     <div class="flex items-start">
-                        <input type="checkbox" id="termsAccept"
+                        <input type="checkbox" id="termsAccept" name="terms" value="agree"
                             class="h-4 w-4 mt-1 text-primary focus:ring-primary border-gray-300 rounded">
                         <label for="termsAccept" class="ml-2 block text-sm text-gray-700">
                             <a href="#" class="text-primary hover:underline">Kullanım Şartları</a> ve <a
@@ -245,45 +270,21 @@
                             ediyorum
                         </label>
                     </div>
-                    <button type="submit"
-                        class="w-full bg-primary text-white py-2 !rounded-button hover:bg-opacity-90 transition-all">Kayıt
-                        Ol</button>
+                    <div>
+                        <button type="submit"
+                            class="w-full bg-primary text-white py-2 !rounded-button hover:bg-opacity-90 transition-all flex items-center justify-center">
+                            <i class="ri-user-add-line mr-2"></i>
+                            Kayıt Ol
+                        </button>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="{{ route('register') }}" class="text-primary hover:underline text-sm">Kayıt sayfasına git</a>
+                    </div>
                 </form>
-                <!--
-                <div class="mt-6">
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-2 bg-white text-gray-500">veya şununla kayıt ol</span>
-                        </div>
-                    </div>
-                    <div class="mt-6 grid grid-cols-3 gap-3">
-                        <button
-                            class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50">
-                            <div class="w-5 h-5 flex items-center justify-center">
-                                <i class="ri-google-fill text-red-500"></i>
-                            </div>
-                        </button>
-                        <button
-                            class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50">
-                            <div class="w-5 h-5 flex items-center justify-center">
-                                <i class="ri-facebook-fill text-blue-600"></i>
-                            </div>
-                        </button>
-                        <button
-                            class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50">
-                            <div class="w-5 h-5 flex items-center justify-center">
-                                <i class="ri-apple-fill"></i>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-            -->
             </div>
         </div>
     </div>
+    @endguest
     <!-- Cart Modal HTML -->
     <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 overflow-hidden max-h-[90vh] flex flex-col">

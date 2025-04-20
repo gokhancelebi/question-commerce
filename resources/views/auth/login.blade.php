@@ -3,89 +3,107 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Giriş Yap</title>
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    @vite('resources/css/app.css')
 </head>
-<body class="hold-transition login-page">
-<div class="login-box">
-    <div class="login-logo">
-        <a href="{{ url('/') }}"><b>Question</b>Commerce</a>
-    </div>
-    <!-- /.login-logo -->
-    <div class="card">
-        <div class="card-body login-card-body">
-            <p class="login-box-msg">Oturumunuzu başlatmak için giriş yapın</p>
-
-            <form action="{{ route('login') }}" method="post">
+<body class="bg-gray-50 min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <a href="{{ url('/') }}" class="text-4xl font-['Pacifico'] text-primary inline-block mb-2">logo</a>
+            <h1 class="text-2xl font-semibold text-gray-800">Giriş Yap</h1>
+            <p class="text-gray-600">Hesabınızla giriş yaparak devam edin</p>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            @if(session('status'))
+            <div class="bg-green-100 border border-green-200 text-green-700 px-4 py-3 mb-4 rounded">
+                {{ session('status') }}
+            </div>
+            @endif
+            
+            <form method="POST" action="{{ route('login') }}" class="p-6 space-y-4">
                 @csrf
-                <div class="input-group mb-3">
-                    <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="E-posta" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-envelope"></span>
+                
+                @if(request()->has('redirect_back'))
+                <input type="hidden" name="redirect_back" value="{{ request('redirect_back') }}">
+                @endif
+                
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ri-mail-line text-gray-400"></i>
                         </div>
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autocomplete="email" 
+                            class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary @error('email') border-red-500 @enderror" 
+                            placeholder="E-posta adresinizi girin">
                     </div>
                     @error('email')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="input-group mb-3">
-                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Şifre" required autocomplete="current-password">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Şifre</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="ri-lock-line text-gray-400"></i>
                         </div>
+                        <input id="password" type="password" name="password" required autocomplete="current-password" 
+                            class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary @error('password') border-red-500 @enderror"
+                            placeholder="Şifrenizi girin">
                     </div>
                     @error('password')
-                    <span class="invalid-feedback" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                 </div>
-                <div class="row">
-                    <div class="col-8">
-                        <div class="icheck-primary">
-                            <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                            <label for="remember">
-                                Beni Hatırla
-                            </label>
-                        </div>
+                
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}
+                            class="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                        <label for="remember" class="ml-2 block text-sm text-gray-700">
+                            Beni Hatırla
+                        </label>
                     </div>
-                    <!-- /.col -->
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">Giriş Yap</button>
-                    </div>
-                    <!-- /.col -->
+                    <a href="{{ route('password.request') }}" class="text-sm text-primary hover:underline">
+                        Şifremi unuttum
+                    </a>
+                </div>
+                
+                <div>
+                    <button type="submit" class="w-full bg-primary text-white py-2 rounded-md hover:bg-opacity-90 transition-all flex items-center justify-center">
+                        <i class="ri-login-box-line mr-2"></i>
+                        Giriş Yap
+                    </button>
                 </div>
             </form>
-
-            <p class="mb-1">
-                <a href="{{ route('password.request') }}">Şifremi unuttum</a>
-            </p>
-            <p class="mb-0">
-                <a href="{{ route('register') }}" class="text-center">Yeni üyelik oluştur</a>
-            </p>
+            
+            <div class="p-6 bg-gray-50 border-t border-gray-200 text-center">
+                <p class="text-sm text-gray-600">
+                    Hesabınız yok mu? 
+                    <a href="{{ route('register', request()->only('redirect_back')) }}" class="text-primary hover:underline font-medium">
+                        Yeni üyelik oluştur
+                    </a>
+                </p>
+            </div>
         </div>
-        <!-- /.login-card-body -->
+        
+        <div class="mt-8 text-center">
+            <a href="{{ url('/') }}" class="text-gray-600 hover:text-gray-800 flex items-center justify-center">
+                <i class="ri-arrow-left-line mr-2"></i>
+                Ana Sayfaya Dön
+            </a>
+        </div>
     </div>
-</div>
-<!-- /.login-box -->
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    
+    @vite('resources/js/app.js')
 </body>
 </html> 

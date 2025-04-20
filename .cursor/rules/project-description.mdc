@@ -5,6 +5,9 @@ alwaysApply: false
 ---
 when you make some changes dont remove any existing proved feature without asking
 
+Laravel 12
+TailwindCSS 3.4.16
+
 everytime when you change anything related to migration files ask for php artisan migrate:fresh --seed command
 
 # Project Short Description
@@ -13,6 +16,8 @@ everytime when you change anything related to migration files ask for php artisa
 - Admin should be able to access admin panel, user should be able to only see front pages and purchase items
 - website and admin panel will be turkish
 - Users will choose answers for questions in home page accordion, for example we will choose 5 question and will will define a product for each answer combinations in admin panel, in home user will reply all questions and end of the exam accordion user will see a product to add to cart and re-reply all questions to add more products to card.
+- we have indepentent register/login pages and also popups. Popups are disabled we dont use them yet but they should have the same functionality as independent papges but not activeted.
+
 
 # Admin related routes
 - admin panel design should be consistent and responsive
