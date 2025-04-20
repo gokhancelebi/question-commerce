@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ContactSeeder::class,
             QuestionAnswerSeeder::class,
             PageSeeder::class,
+            FAQSeeder::class,
         ]);
     }
 }

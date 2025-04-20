@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\PageController;
 use App\Http\Controllers\Front\ContactController;
+use App\Http\Controllers\Front\FAQController as FrontFAQController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\ContactController as AdminContactController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\QuestionAnswerController;
 use App\Http\Controllers\Admin\ProductMatchController;
+use App\Http\Controllers\Admin\FAQController as AdminFAQController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\CheckoutController;
@@ -23,6 +25,7 @@ use App\Http\Controllers\Front\OrderController as FrontOrderController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/survey/process', [HomeController::class, 'processSurvey'])->name('survey.process');
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('pages.show');
+Route::get('/faqs', [FrontFAQController::class, 'index'])->name('faqs.index');
 
 // Guest routes (only accessible when not logged in)
 Route::middleware('guest')->group(function () {
@@ -59,6 +62,9 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
 
     // Pages management
     Route::resource('pages', AdminPageController::class);
+
+    // FAQs management
+    Route::resource('faqs', AdminFAQController::class);
 
     // Products
     Route::resource('products', ProductController::class);
