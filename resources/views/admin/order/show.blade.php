@@ -6,9 +6,14 @@
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Sipariş #{{ $order->id }}</h1>
-        <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Listeye Dön
-        </a>
+        <div>
+            <a href="{{ route('admin.orders.edit', $order) }}" class="btn btn-primary me-2">
+                <i class="fas fa-edit"></i> Düzenle
+            </a>
+            <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Listeye Dön
+            </a>
+        </div>
     </div>
 
     <div class="row">

@@ -38,6 +38,9 @@
                                     <a href="{{ route('admin.orders.show', $order->id) }}" class="btn btn-sm btn-info me-1" title="Detay">
                                         <i class="fas fa-eye"></i>
                                     </a>
+                                    <a href="{{ route('admin.orders.edit', $order->id) }}" class="btn btn-sm btn-primary me-1" title="Düzenle">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @empty
