@@ -23,7 +23,7 @@
             position: relative;
             z-index: 60; /* Ensure dropdown container is above other elements */
         }
-        
+
         .user-dropdown-menu {
             display: none;
             position: absolute;
@@ -33,7 +33,7 @@
             padding-top: 10px; /* Add padding at top instead of margin */
             z-index: 50;
         }
-        
+
         /* This creates an invisible bridge between button and dropdown */
         .user-dropdown::after {
             content: '';
@@ -44,7 +44,7 @@
             height: 20px; /* Taller bridge */
             display: block;
         }
-        
+
         .user-dropdown:hover .user-dropdown-menu,
         .user-dropdown-menu:hover,
         .user-dropdown:hover::after {
@@ -116,7 +116,7 @@
                     </div>
                 </a>
                 @endauth
-                
+
                 <a href="{{ route('cart.index') }}" id="cartButton" class="text-gray-800 hover:text-primary relative">
                     <div class="w-10 h-10 flex items-center justify-center">
                         <i class="ri-shopping-cart-line ri-lg"></i>
@@ -124,13 +124,13 @@
                     <span id="cartCount"
                         class="absolute -top-1 -right-1 bg-primary text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">{{ count(Session::get('cart', [])) }}</span>
                 </a>
-                
+
                 @guest
-                <div class="hidden md:flex items-center space-x-3">
-                    <a href="{{ route('login', ['redirect_back' => url()->current()]) }}" 
+                <div class="hidden md:flex gap-2 items-center space-x-3">
+                    <a href="{{ route('login', ['redirect_back' => url()->current()]) }}"
                         class="text-gray-800 hover:text-primary transition-colors whitespace-nowrap">Giriş</a>
-                    <span class="text-gray-300">|</span>
-                    <a href="{{ route('register', ['redirect_back' => url()->current()]) }}" 
+                    <span class="text-gray-300"> | </span>
+                    <a href="{{ route('register', ['redirect_back' => url()->current()]) }}"
                         class="text-gray-800 hover:text-primary transition-colors whitespace-nowrap">Kayıt</a>
                 </div>
                 <a href="{{ route('login', ['redirect_back' => url()->current()]) }}" class="text-gray-800 hover:text-primary md:hidden">
@@ -139,7 +139,7 @@
                     </div>
                 </a>
                 @endguest
-                
+
                 <button class="md:hidden text-gray-800">
                     <div class="w-10 h-10 flex items-center justify-center">
                         <i class="ri-menu-line ri-lg"></i>
@@ -149,9 +149,9 @@
         </div>
     </header>
    @yield('content')
-   
+
    @include('front.partials.footer')
-    
+
     @guest
     <!-- Modal HTML for login/register and cart -->
     <!-- Remove this entire auth modal section -->
