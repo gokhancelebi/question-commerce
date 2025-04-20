@@ -633,6 +633,14 @@
                     .then(data => {
                         if (data.success) {
                             updateCartUI();
+                            
+                            // Close the modal if cart becomes empty
+                            if (data.cartCount === 0) {
+                                setTimeout(() => {
+                                    cartModal.classList.add('hidden');
+                                    document.body.style.overflow = '';
+                                }, 1000);
+                            }
                         }
                     });
                 });
@@ -658,6 +666,14 @@
                     .then(data => {
                         if (data.success) {
                             updateCartUI();
+                            
+                            // Close the modal if cart becomes empty
+                            if (data.cartCount === 0) {
+                                setTimeout(() => {
+                                    cartModal.classList.add('hidden');
+                                    document.body.style.overflow = '';
+                                }, 1000);
+                            }
                         }
                     });
                 });
@@ -683,6 +699,14 @@
                         if (data.success) {
                             updateCartUI();
                             showNotification('Ürün sepetten çıkarıldı', 'info');
+                            
+                            // Close the modal if cart becomes empty
+                            if (data.cartCount === 0) {
+                                setTimeout(() => {
+                                    cartModal.classList.add('hidden');
+                                    document.body.style.overflow = '';
+                                }, 1000);
+                            }
                         }
                     });
                 });
@@ -803,9 +827,8 @@
         });
         // Cart modal functionality
         cartButton.addEventListener('click', function(e) {
-            // Don't prevent default - let it navigate to cart page
-            // But we'll also update the cart UI on hover/click for quick preview
-            updateCartUI(); 
+            e.preventDefault(); // Prevent navigation to cart page
+            showCartModal(); // Show modal instead
         });
         closeCartModal.addEventListener('click', function() {
             cartModal.classList.add('hidden');
@@ -895,9 +918,7 @@
                             
                             // Open cart modal after a short delay
                             setTimeout(() => {
-                                cartModal.classList.remove('hidden');
-                                document.body.style.overflow = 'hidden';
-                                updateCartUI();
+                                showCartModal();
                             }, 1000);
                         } else {
                             showNotification(data.message, 'error');
@@ -946,6 +967,13 @@ to { opacity: 0; transform: translateY(-10px); }
             
             // User dropdown now handled by CSS hover only
         });
+
+        // Function to show cart modal
+        function showCartModal() {
+            updateCartUI();
+            cartModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
     </script>
 
     @yield('scripts')

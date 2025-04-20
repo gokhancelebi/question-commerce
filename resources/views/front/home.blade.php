@@ -427,11 +427,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(() => {
                         const cartModal = document.getElementById('cartModal');
                         if (cartModal) {
-                            cartModal.classList.remove('hidden');
-                            document.body.style.overflow = 'hidden';
-                            // Check if function exists before calling it
-                            if (typeof updateCartUI === 'function') {
-                                updateCartUI();
+                            // Use the parent showCartModal function if available
+                            if (typeof showCartModal === 'function') {
+                                showCartModal();
+                            } else {
+                                cartModal.classList.remove('hidden');
+                                document.body.style.overflow = 'hidden';
+                                // Check if function exists before calling it
+                                if (typeof updateCartUI === 'function') {
+                                    updateCartUI();
+                                }
                             }
                         } else {
                             // If modal doesn't exist, redirect to cart page
