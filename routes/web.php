@@ -33,7 +33,7 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [LoginController::class, 'login']);
     Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('register', [RegisterController::class, 'register']);
-    
+
     // AJAX authentication routes
     Route::post('ajax/login', [LoginController::class, 'ajaxLogin'])->name('ajax.login');
     Route::post('ajax/register', [RegisterController::class, 'ajaxRegister'])->name('ajax.register');
@@ -42,7 +42,7 @@ Route::middleware('guest')->group(function () {
 // Auth routes (only accessible when logged in)
 Route::middleware('auth')->group(function () {
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-    
+
     // User account routes
     Route::get('/account', [App\Http\Controllers\Front\UserController::class, 'account'])->name('user.account');
     Route::post('/account', [App\Http\Controllers\Front\UserController::class, 'updateAccount'])->name('user.account.update');
@@ -96,6 +96,10 @@ Route::patch('/cart/update', [App\Http\Controllers\Front\CartController::class, 
 Route::delete('/cart/remove', [App\Http\Controllers\Front\CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [App\Http\Controllers\Front\CartController::class, 'clear'])->name('cart.clear');
 Route::get('/cart-data', [CartController::class, 'getCartData'])->name('cart.data');
+// New cart routes for AJAX functionality
+Route::get('/cart/get', [CartController::class, 'get'])->name('cart.get');
+Route::post('/cart/update-quantity', [CartController::class, 'updateQuantity'])->name('cart.update-quantity');
+Route::post('/cart/remove', [CartController::class, 'removeItem'])->name('cart.remove-item');
 
 // Checkout and Order routes
 Route::get('/checkout', [App\Http\Controllers\Front\CheckoutController::class, 'index'])->name('checkout.index');

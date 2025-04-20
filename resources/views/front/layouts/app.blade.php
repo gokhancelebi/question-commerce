@@ -206,6 +206,228 @@
     <!-- Scripts -->
     @vite('resources/js/app.js')
     @stack('scripts')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Cart modal functionality
+            const cartButton = document.getElementById('cartButton');
+            const cartModal = document.getElementById('cartModal');
+            const closeCartModal = document.getElementById('closeCartModal');
+            const emptyCartState = document.getElementById('emptyCartState');
+            const cartWithItemsState = document.getElementById('cartWithItemsState');
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+
+            // Open cart modal
+            if (cartButton) {
+                cartButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showCartModal();
+                });
+            }
+
+            // Close cart modal
+            if (closeCartModal) {
+                closeCartModal.addEventListener('click', function() {
+                    hideCartModal();
+                });
+            }
+
+            // Close modal when clicking outside
+            if (cartModal) {
+                cartModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        hideCartModal();
+                    }
+                });
+            }
+
+            // Escape key closes modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && cartModal && !cartModal.classList.contains('hidden')) {
+                    hideCartModal();
+                }
+            });
+
+            // Function to show cart modal
+            window.showCartModal = function() {
+                if (cartModal) {
+                    cartModal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                    updateCartUI();
+                }
+            };
+
+            // Function to hide cart modal
+            window.hideCartModal = function() {
+                if (cartModal) {
+                    cartModal.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+            };
+
+            // Function to update cart UI
+            window.updateCartUI = function() {
+                fetch('/cart/get', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const cartCount = document.getElementById('cartCount');
+                    if (cartCount) {
+                        cartCount.textContent = data.items.length;
+                    }
+
+                    if (data.items.length === 0) {
+                        if (emptyCartState) emptyCartState.classList.remove('hidden');
+                        if (cartWithItemsState) cartWithItemsState.classList.add('hidden');
+                        return;
+                    }
+
+                    if (emptyCartState) emptyCartState.classList.add('hidden');
+                    if (cartWithItemsState) cartWithItemsState.classList.remove('hidden');
+
+                    // Update cart items
+                    if (cartItems) {
+                        let html = '';
+                        let total = 0;
+
+                        data.items.forEach(item => {
+                            const itemTotal = item.price * item.quantity;
+                            total += itemTotal;
+
+                            html += `
+                                <div class="flex border-b border-gray-100 py-4 items-center" data-item-id="${item.id}">
+                                    <div class="w-16 h-16 flex-shrink-0 mr-4 bg-gray-50 rounded overflow-hidden">
+                                        <img src="${item.image || 'https://via.placeholder.com/80'}" alt="${item.name}" class="w-full h-full object-contain">
+                                    </div>
+                                    <div class="flex-grow">
+                                        <h4 class="text-sm font-medium text-gray-900">${item.name}</h4>
+                                        <div class="flex items-center mt-2">
+                                            <button class="cart-qty-decrease w-8 h-8 flex items-center justify-center border rounded-l text-gray-600 hover:bg-gray-100">
+                                                <i class="ri-subtract-line"></i>
+                                            </button>
+                                            <span class="cart-item-qty w-10 h-8 flex items-center justify-center border-t border-b">${item.quantity}</span>
+                                            <button class="cart-qty-increase w-8 h-8 flex items-center justify-center border rounded-r text-gray-600 hover:bg-gray-100">
+                                                <i class="ri-add-line"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="text-right ml-4">
+                                        <div class="text-sm font-medium text-gray-900">
+                                            ₺${item.price.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                                        </div>
+                                        <button class="cart-item-remove mt-2 text-xs text-red-500 hover:text-red-700">
+                                            <i class="ri-delete-bin-line"></i> Sil
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        cartItems.innerHTML = html;
+
+                        // Update cart total
+                        if (cartTotal) {
+                            cartTotal.textContent = '₺' + total.toLocaleString('tr-TR', { minimumFractionDigits: 2 });
+                        }
+
+                        // Add event listeners to cart item controls
+                        document.querySelectorAll('.cart-qty-decrease').forEach(button => {
+                            button.addEventListener('click', decreaseQuantity);
+                        });
+
+                        document.querySelectorAll('.cart-qty-increase').forEach(button => {
+                            button.addEventListener('click', increaseQuantity);
+                        });
+
+                        document.querySelectorAll('.cart-item-remove').forEach(button => {
+                            button.addEventListener('click', removeCartItem);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading cart:', error);
+                });
+            };
+
+            // Function to decrease quantity
+            function decreaseQuantity() {
+                const itemContainer = this.closest('[data-item-id]');
+                const itemId = itemContainer.getAttribute('data-item-id');
+                const qtyElement = itemContainer.querySelector('.cart-item-qty');
+                let qty = parseInt(qtyElement.textContent) - 1;
+
+                if (qty <= 0) {
+                    removeCartItem.call(this);
+                    return;
+                }
+
+                updateCartItemQuantity(itemId, qty);
+            }
+
+            // Function to increase quantity
+            function increaseQuantity() {
+                const itemContainer = this.closest('[data-item-id]');
+                const itemId = itemContainer.getAttribute('data-item-id');
+                const qtyElement = itemContainer.querySelector('.cart-item-qty');
+                let qty = parseInt(qtyElement.textContent) + 1;
+
+                updateCartItemQuantity(itemId, qty);
+            }
+
+            // Function to remove cart item
+            function removeCartItem() {
+                const itemContainer = this.closest('[data-item-id]');
+                const itemId = itemContainer.getAttribute('data-item-id');
+
+                fetch('/cart/remove', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ id: itemId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateCartUI();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error removing item:', error);
+                });
+            }
+
+            // Function to update cart item quantity
+            function updateCartItemQuantity(itemId, qty) {
+                fetch('/cart/update-quantity', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ id: itemId, quantity: qty })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateCartUI();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating quantity:', error);
+                });
+            }
+
+            // Initial cart UI update
+            setTimeout(updateCartUI, 1000);
+        });
+    </script>
 </body>
 
 </html>
