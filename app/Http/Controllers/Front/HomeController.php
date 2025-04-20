@@ -37,15 +37,47 @@ class HomeController extends Controller
     {
         $answers = $request->all();
 
-        // Get all selected answer IDs
+        // Get all selected answer IDs - current implementation is not extracting values correctly
         $selectedAnswerIds = collect($answers)->filter(function($value, $key) {
             return str_starts_with($key, 'question');
         })->values()->toArray();
 
-        // Find product match that has these answers
-        $productMatch = ProductMatch::whereJsonContains('answer_combinations', $selectedAnswerIds)
+        // Convert to actual integer IDs
+        $answerIds = [];
+        foreach ($selectedAnswerIds as $value) {
+            $answerIds[] = (int) $value;
+        }
+
+        // Find product match with exact answer combination
+        $productMatch = ProductMatch::where('is_active', true)
             ->with(['product', 'product.images'])
+            ->whereJsonContains('answer_combinations', $answerIds)
             ->first();
+
+        if (!$productMatch) {
+            // Try to find a match by checking if all our answers are in any combination
+            // This handles cases where the exact combination doesn't exist
+            $productMatches = ProductMatch::where('is_active', true)
+                ->with(['product', 'product.images'])
+                ->get();
+
+            foreach ($productMatches as $match) {
+                $matchAnswers = $match->answer_combinations;
+                $allFound = true;
+
+                foreach ($answerIds as $answerId) {
+                    if (!in_array($answerId, $matchAnswers)) {
+                        $allFound = false;
+                        break;
+                    }
+                }
+
+                if ($allFound) {
+                    $productMatch = $match;
+                    break;
+                }
+            }
+        }
 
         if ($productMatch && $productMatch->product) {
             $product = $productMatch->product;
@@ -66,7 +98,8 @@ class HomeController extends Controller
         }
 
         // If no match found, return a random product as fallback
-        $randomProduct = Product::with('images')
+        $randomProduct = Product::where('is_active', true)
+            ->with('images')
             ->inRandomOrder()
             ->first();
 

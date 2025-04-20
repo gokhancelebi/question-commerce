@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Collect all answers
         const answers = {};
         document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
-            answers[radio.name] = radio.value;
+            answers[radio.name] = parseInt(radio.value);
         });
 
         // Show loading indicator
@@ -384,18 +384,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check if the clicked element is the "Sepete Ekle" button or its child elements
         const addToCartBtn = event.target.closest('button');
         if (addToCartBtn && addToCartBtn.innerText.includes('Sepete Ekle')) {
-            
+
             // Get the product data from the rendered HTML
             const productContainer = addToCartBtn.closest('.bg-white.rounded-lg');
             if (!productContainer) return;
-            
+
             const productId = addToCartBtn.getAttribute('data-product-id');
             const productName = productContainer.querySelector('h4.text-xl.font-bold').innerText;
             const productPriceText = productContainer.querySelector('span.text-xl.font-bold.text-primary').innerText;
             const productPrice = parseFloat(productPriceText.replace(/[^0-9,]/g, '').replace(',', '.'));
             const productImage = productContainer.querySelector('img').getAttribute('src');
             const productDescription = productContainer.querySelector('p.text-gray-600').innerText;
-            
+
             // Send AJAX request to add item to cart
             fetch('{{ route('cart.add') }}', {
                 method: 'POST',
@@ -417,12 +417,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.success) {
                     // Update cart count in header
                     document.getElementById('cartCount').textContent = data.cartCount;
-                    
+
                     // Show notification
                     showNotification(
                         `Ürün sepete eklendi! Sepetinizde şimdi ${data.cartCount} ürün var.`,
                         'success');
-                    
+
                     // Open cart modal after a short delay
                     setTimeout(() => {
                         const cartModal = document.getElementById('cartModal');
