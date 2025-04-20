@@ -211,8 +211,9 @@
     @endguest
     <!-- Cart Modal HTML -->
     <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 overflow-hidden max-h-[90vh] flex flex-col">
-            <div class="flex justify-between items-center border-b p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 overflow-hidden flex flex-col" style="max-height: 80vh;">
+            <!-- Fixed Header -->
+            <div class="flex justify-between items-center border-b p-4 bg-white">
                 <h3 class="text-xl font-semibold">Sepetiniz</h3>
                 <button id="closeCartModal" class="text-gray-400 hover:text-gray-600">
                     <div class="w-6 h-6 flex items-center justify-center">
@@ -234,11 +235,13 @@
             </div>
             <!-- Cart With Items State -->
             <div id="cartWithItemsState" class="flex-1 flex flex-col hidden">
-                <div class="flex-1 overflow-y-auto p-4">
-                    <div id="cartItemsList" class="space-y-4">
+                <!-- Scrollable Products Area -->
+                <div class="overflow-y-auto flex-1" style="max-height: 50vh;">
+                    <div id="cartItemsList" class="p-4 divide-y divide-gray-100">
                         <!-- Cart items will be dynamically added here -->
                     </div>
                 </div>
+                <!-- Fixed Footer -->
                 <div class="border-t p-4 bg-gray-50">
                     <div class="flex justify-between mb-2">
                         <span class="text-gray-600">Ara Toplam:</span>
@@ -567,26 +570,26 @@
                     // Add cart items to UI
                     data.cartItems.forEach(item => {
                         const itemElement = document.createElement('div');
-                        itemElement.className = 'flex items-center border-b border-gray-100 pb-4';
+                        itemElement.className = 'flex items-start py-3 first:pt-0 last:pb-0';
                         itemElement.innerHTML = `
-<div class="w-20 h-20 flex-shrink-0 bg-gray-100 rounded overflow-hidden mr-4">
+<div class="w-16 h-16 flex-shrink-0 bg-gray-100 rounded overflow-hidden mr-3">
 <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover object-center">
 </div>
-<div class="flex-1">
-<h4 class="font-medium">${item.name}</h4>
-<p class="text-sm text-gray-500">${item.specs}</p>
-<div class="flex items-center justify-between mt-2">
+<div class="flex-1 min-w-0">
+<h4 class="font-medium text-sm truncate">${item.name}</h4>
+<p class="text-xs text-gray-500 mb-2 line-clamp-1">${item.specs}</p>
+<div class="flex items-center justify-between">
 <div class="flex items-center border rounded">
-<button class="quick-decrease-quantity px-2 py-1 text-gray-500 hover:text-gray-700" data-id="${item.id}">
+<button class="quick-decrease-quantity px-1 py-0.5 text-gray-500 hover:text-gray-700" data-id="${item.id}">
 <i class="ri-subtract-line"></i>
 </button>
-<span class="px-2 py-1 border-x">${item.quantity}</span>
-<button class="quick-increase-quantity px-2 py-1 text-gray-500 hover:text-gray-700" data-id="${item.id}">
+<span class="px-2 py-0.5 border-x text-sm">${item.quantity}</span>
+<button class="quick-increase-quantity px-1 py-0.5 text-gray-500 hover:text-gray-700" data-id="${item.id}">
 <i class="ri-add-line"></i>
 </button>
 </div>
 <div class="flex items-center">
-<span class="font-medium mr-3">${formatPrice(item.price * item.quantity)}</span>
+<span class="font-medium text-sm mr-2">${formatPrice(item.price * item.quantity)}</span>
 <button class="quick-remove-item text-gray-400 hover:text-red-500" data-id="${item.id}">
 <i class="ri-delete-bin-line"></i>
 </button>
@@ -942,18 +945,44 @@
         const style = document.createElement('style');
         style.textContent = `
 .animate-fade-in {
-animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.3s ease-in-out;
 }
 .animate-fade-out {
-animation: fadeOut 0.3s ease-in-out;
+  animation: fadeOut 0.3s ease-in-out;
 }
 @keyframes fadeIn {
-from { opacity: 0; transform: translateY(-10px); }
-to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeOut {
-from { opacity: 1; transform: translateY(0); }
-to { opacity: 0; transform: translateY(-10px); }
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
+}
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+#cartModal .bg-white {
+  display: flex;
+  flex-direction: column;
+}
+#cartWithItemsState {
+  max-height: calc(80vh - 60px); /* Account for header */
+  display: flex;
+  flex-direction: column;
 }
 `;
         document.head.appendChild(style);
