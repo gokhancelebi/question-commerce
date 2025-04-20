@@ -94,9 +94,9 @@
                 @auth
                 <div class="relative user-dropdown">
                     <button id="userDropdownBtn" class="text-gray-800 hover:text-primary flex items-center">
-                        <div class="w-10 h-10 flex items-center justify-center">
-                            <i class="ri-user-line ri-lg"></i>
-                        </div>
+                    <div class="w-10 h-10 flex items-center justify-center">
+                        <i class="ri-user-line ri-lg"></i>
+                    </div>
                         <span class="ml-1 hidden sm:inline">{{ Auth::user()->name }}</span>
                         <i class="ri-arrow-down-s-line ml-1"></i>
                     </button>
@@ -573,25 +573,25 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Update cart count
+            // Update cart count
                 document.getElementById('cartCount').textContent = data.cartCount;
                 
-                // Show/hide appropriate cart state
+            // Show/hide appropriate cart state
                 if (data.cartItems.length === 0) {
-                    emptyCartState.classList.remove('hidden');
-                    cartWithItemsState.classList.add('hidden');
-                } else {
-                    emptyCartState.classList.add('hidden');
-                    cartWithItemsState.classList.remove('hidden');
+                emptyCartState.classList.remove('hidden');
+                cartWithItemsState.classList.add('hidden');
+            } else {
+                emptyCartState.classList.add('hidden');
+                cartWithItemsState.classList.remove('hidden');
                     
-                    // Clear and rebuild cart items list
-                    cartItemsList.innerHTML = '';
+                // Clear and rebuild cart items list
+                cartItemsList.innerHTML = '';
                     
                     // Add cart items to UI
                     data.cartItems.forEach(item => {
-                        const itemElement = document.createElement('div');
+                    const itemElement = document.createElement('div');
                         itemElement.className = 'flex items-start py-3 first:pt-0 last:pb-0';
-                        itemElement.innerHTML = `
+                    itemElement.innerHTML = `
 <div class="w-16 h-16 flex-shrink-0 bg-gray-100 rounded overflow-hidden mr-3">
 <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover object-center">
 </div>
@@ -617,15 +617,15 @@
 </div>
 </div>
 `;
-                        cartItemsList.appendChild(itemElement);
-                    });
+                    cartItemsList.appendChild(itemElement);
+                });
                     
                     // Update totals in UI
                     cartSubtotal.textContent = formatPrice(data.subtotal);
                     cartShipping.textContent = formatPrice(data.shipping);
                     cartTotal.textContent = formatPrice(data.total);
                     
-                    // Add event listeners to quantity buttons and remove buttons
+                // Add event listeners to quantity buttons and remove buttons
                     addQuickCartEventListeners();
                 }
             })
@@ -638,7 +638,7 @@
         function addQuickCartEventListeners() {
             // Quick decrease quantity
             cartItemsList.querySelectorAll('.quick-decrease-quantity').forEach(button => {
-                button.addEventListener('click', function() {
+                    button.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
                     
                     fetch('{{ route('cart.update') }}', {
@@ -671,7 +671,7 @@
             
             // Quick increase quantity
             cartItemsList.querySelectorAll('.quick-increase-quantity').forEach(button => {
-                button.addEventListener('click', function() {
+                    button.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
                     
                     fetch('{{ route('cart.update') }}', {
@@ -704,7 +704,7 @@
             
             // Quick remove item
             cartItemsList.querySelectorAll('.quick-remove-item').forEach(button => {
-                button.addEventListener('click', function() {
+                    button.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
                     
                     fetch('{{ route('cart.remove') }}', {
@@ -883,19 +883,19 @@
             .then(response => response.json())
             .then(data => {
                 if (data.cartItems.length === 0) {
-                    showNotification('Sepetinizde ürün bulunmamaktadır', 'error');
-                    return;
-                }
+                showNotification('Sepetinizde ürün bulunmamaktadır', 'error');
+                return;
+            }
                 
-                // Show checkout notification
-                showNotification('Ödeme sayfasına yönlendiriliyorsunuz', 'success', true);
+            // Show checkout notification
+            showNotification('Ödeme sayfasına yönlendiriliyorsunuz', 'success', true);
                 
-                // Close cart modal
-                cartModal.classList.add('hidden');
-                document.body.style.overflow = ''; // Enable scrolling
+            // Close cart modal
+            cartModal.classList.add('hidden');
+            document.body.style.overflow = ''; // Enable scrolling
                 
                 // Redirect to checkout page
-                setTimeout(() => {
+            setTimeout(() => {
                     window.location.href = '{{ route('cart.index') }}';
                 }, 1500);
             })
@@ -935,14 +935,14 @@
                             document.getElementById('cartCount').textContent = data.cartCount;
                             
                             // Show notification
-                            showNotification(
+                    showNotification(
                                 `Ürün sepete eklendi! Sepetinizde şimdi ${data.cartCount} ürün var.`,
-                                'success');
+                        'success');
                             
-                            // Open cart modal after a short delay
-                            setTimeout(() => {
+                    // Open cart modal after a short delay
+                    setTimeout(() => {
                                 showCartModal();
-                            }, 1000);
+                    }, 1000);
                         } else {
                             showNotification(data.message, 'error');
                         }
@@ -965,18 +965,18 @@
         const style = document.createElement('style');
         style.textContent = `
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-in-out;
+animation: fadeIn 0.3s ease-in-out;
 }
 .animate-fade-out {
-  animation: fadeOut 0.3s ease-in-out;
+animation: fadeOut 0.3s ease-in-out;
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+from { opacity: 0; transform: translateY(-10px); }
+to { opacity: 1; transform: translateY(0); }
 }
 @keyframes fadeOut {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(-10px); }
+from { opacity: 1; transform: translateY(0); }
+to { opacity: 0; transform: translateY(-10px); }
 }
 .truncate {
   overflow: hidden;
