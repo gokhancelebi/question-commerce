@@ -4,163 +4,226 @@
 @section('meta_description', 'Question Commerce SSS. Sık sorulan sorular ve yanıtları.')
 
 @section('content')
-<div class="container my-5">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="mb-4 text-3xl font-bold text-center text-gray-800">Sık Sorulan Sorular</h1>
-            
-            @php
-                // Group FAQs by categories based on their order
-                $generalFaqs = $faqs->filter(function($faq) { return $faq->order <= 2; });
-                $shippingFaqs = $faqs->filter(function($faq) { return $faq->order >= 3 && $faq->order <= 4; });
-                $returnFaqs = $faqs->filter(function($faq) { return $faq->order >= 5 && $faq->order <= 6; });
-                $accountFaqs = $faqs->filter(function($faq) { return $faq->order >= 7 && $faq->order <= 8; });
-                $paymentFaqs = $faqs->filter(function($faq) { return $faq->order >= 9; });
-            @endphp
-            
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">Genel Sorular</h2>
-                <div class="accordion" id="generalAccordion">
-                    @forelse($generalFaqs as $index => $faq)
-                        <div class="accordion-item bg-white border border-gray-200 rounded-lg mb-2 overflow-hidden">
-                            <h2 class="accordion-header" id="heading{{ $faq->id }}">
-                                <button class="accordion-button {{ $index > 0 ? 'collapsed' : '' }} p-4 w-full text-left font-medium text-gray-700 hover:bg-gray-50 focus:outline-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $faq->id }}" aria-expanded="{{ $index === 0 ? 'true' : 'false' }}" aria-controls="collapse{{ $faq->id }}">
-                                    {{ $faq->question }}
-                                </button>
-                            </h2>
-                            <div id="collapse{{ $faq->id }}" class="accordion-collapse collapse {{ $index === 0 ? 'show' : '' }}" aria-labelledby="heading{{ $faq->id }}" data-bs-parent="#generalAccordion">
-                                <div class="accordion-body p-4 bg-gray-50">
-                                    {!! $faq->answer !!}
-                                </div>
+<div class="container mx-auto max-w-5xl px-4 py-16">
+    <!-- Page Header -->
+    <div class="mb-12 text-center">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Sık Sorulan Sorular</h1>
+        <p class="text-gray-600 max-w-3xl mx-auto">Müşterilerimizin en çok sorduğu soruları ve yanıtlarını aşağıda bulabilirsiniz. Aradığınız bilgiyi bulamazsanız bizimle iletişime geçebilirsiniz.</p>
+    </div>
+    
+    <!-- FAQ Categories -->
+    <div class="grid gap-8 mb-16">
+        @php
+            // Group FAQs by categories based on their order
+            $generalFaqs = $faqs->filter(function($faq) { return $faq->order <= 2; });
+            $shippingFaqs = $faqs->filter(function($faq) { return $faq->order >= 3 && $faq->order <= 4; });
+            $returnFaqs = $faqs->filter(function($faq) { return $faq->order >= 5 && $faq->order <= 6; });
+            $accountFaqs = $faqs->filter(function($faq) { return $faq->order >= 7 && $faq->order <= 8; });
+            $paymentFaqs = $faqs->filter(function($faq) { return $faq->order >= 9; });
+        @endphp
+        
+        <!-- Category: General Questions -->
+        <div class="bg-white rounded-xl shadow-sm">
+            <div class="bg-primary/10 px-6 py-4">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                    <i class="ri-information-line mr-3 text-primary text-2xl"></i>
+                    Genel Sorular
+                </h2>
+            </div>
+            <div class="divide-y divide-gray-100">
+                @forelse($generalFaqs as $index => $faq)
+                    <div class="faq-item" x-data="{ open: {{ $index === 0 ? 'true' : 'false' }} }">
+                        <button 
+                            class="w-full py-5 px-6 flex justify-between items-center text-left hover:bg-gray-50 transition-colors focus:outline-none group"
+                            @click="open = !open"
+                        >
+                            <span class="font-medium text-gray-900 text-base md:text-lg group-hover:text-primary transition-colors">{{ $faq->question }}</span>
+                            <span class="ml-4 flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 group-hover:bg-primary/10 transition-colors">
+                                <i class="ri-arrow-down-s-line text-lg text-gray-500 group-hover:text-primary transition-transform duration-300" :class="{'rotate-180': open}"></i>
+                            </span>
+                        </button>
+                        <div 
+                            class="overflow-hidden transition-all duration-300 max-h-0 bg-gray-50/50"
+                            x-ref="content"
+                            :style="open ? 'max-height: ' + $refs.content.scrollHeight + 'px' : 'max-height: 0px'"
+                        >
+                            <div class="p-6 prose prose-sm max-w-none">
+                                {!! $faq->answer !!}
                             </div>
                         </div>
-                    @empty
-                        <div class="text-gray-500">Bu kategoride henüz soru bulunmamaktadır.</div>
-                    @endforelse
-                </div>
-            </div>
-            
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">Kargo ve Teslimat</h2>
-                <div class="accordion" id="shippingAccordion">
-                    @forelse($shippingFaqs as $index => $faq)
-                        <div class="accordion-item bg-white border border-gray-200 rounded-lg mb-2 overflow-hidden">
-                            <h2 class="accordion-header" id="heading{{ $faq->id }}">
-                                <button class="accordion-button collapsed p-4 w-full text-left font-medium text-gray-700 hover:bg-gray-50 focus:outline-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $faq->id }}" aria-expanded="false" aria-controls="collapse{{ $faq->id }}">
-                                    {{ $faq->question }}
-                                </button>
-                            </h2>
-                            <div id="collapse{{ $faq->id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $faq->id }}" data-bs-parent="#shippingAccordion">
-                                <div class="accordion-body p-4 bg-gray-50">
-                                    {!! $faq->answer !!}
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="text-gray-500">Bu kategoride henüz soru bulunmamaktadır.</div>
-                    @endforelse
-                </div>
-            </div>
-            
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">İade ve Geri Ödeme</h2>
-                <div class="accordion" id="returnAccordion">
-                    @forelse($returnFaqs as $index => $faq)
-                        <div class="accordion-item bg-white border border-gray-200 rounded-lg mb-2 overflow-hidden">
-                            <h2 class="accordion-header" id="heading{{ $faq->id }}">
-                                <button class="accordion-button collapsed p-4 w-full text-left font-medium text-gray-700 hover:bg-gray-50 focus:outline-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $faq->id }}" aria-expanded="false" aria-controls="collapse{{ $faq->id }}">
-                                    {{ $faq->question }}
-                                </button>
-                            </h2>
-                            <div id="collapse{{ $faq->id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $faq->id }}" data-bs-parent="#returnAccordion">
-                                <div class="accordion-body p-4 bg-gray-50">
-                                    {!! $faq->answer !!}
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="text-gray-500">Bu kategoride henüz soru bulunmamaktadır.</div>
-                    @endforelse
-                </div>
-            </div>
-            
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">Hesap</h2>
-                <div class="accordion" id="accountAccordion">
-                    @forelse($accountFaqs as $index => $faq)
-                        <div class="accordion-item bg-white border border-gray-200 rounded-lg mb-2 overflow-hidden">
-                            <h2 class="accordion-header" id="heading{{ $faq->id }}">
-                                <button class="accordion-button collapsed p-4 w-full text-left font-medium text-gray-700 hover:bg-gray-50 focus:outline-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $faq->id }}" aria-expanded="false" aria-controls="collapse{{ $faq->id }}">
-                                    {{ $faq->question }}
-                                </button>
-                            </h2>
-                            <div id="collapse{{ $faq->id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $faq->id }}" data-bs-parent="#accountAccordion">
-                                <div class="accordion-body p-4 bg-gray-50">
-                                    {!! $faq->answer !!}
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="text-gray-500">Bu kategoride henüz soru bulunmamaktadır.</div>
-                    @endforelse
-                </div>
-            </div>
-            
-            <div class="mb-8">
-                <h2 class="text-xl font-semibold mb-4 text-gray-700">Ödeme</h2>
-                <div class="accordion" id="paymentAccordion">
-                    @forelse($paymentFaqs as $index => $faq)
-                        <div class="accordion-item bg-white border border-gray-200 rounded-lg mb-2 overflow-hidden">
-                            <h2 class="accordion-header" id="heading{{ $faq->id }}">
-                                <button class="accordion-button collapsed p-4 w-full text-left font-medium text-gray-700 hover:bg-gray-50 focus:outline-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $faq->id }}" aria-expanded="false" aria-controls="collapse{{ $faq->id }}">
-                                    {{ $faq->question }}
-                                </button>
-                            </h2>
-                            <div id="collapse{{ $faq->id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ $faq->id }}" data-bs-parent="#paymentAccordion">
-                                <div class="accordion-body p-4 bg-gray-50">
-                                    {!! $faq->answer !!}
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="text-gray-500">Bu kategoride henüz soru bulunmamaktadır.</div>
-                    @endforelse
-                </div>
-            </div>
-            
-            <div class="mt-12 text-center bg-gray-50 p-8 rounded-lg">
-                <h3 class="text-2xl font-semibold mb-3">Sorunuzu bulamadınız mı?</h3>
-                <p class="mb-6 text-gray-600">İhtiyaç duyduğunuz cevabı bulamadıysanız, lütfen bizimle iletişime geçin.</p>
-                <a href="{{ route('pages.show', 'iletisim') }}" class="bg-primary hover:bg-primary-dark text-white px-8 py-3 rounded-md transition-colors inline-block">
-                    İletişime Geçin
-                </a>
+                    </div>
+                @empty
+                    <div class="px-6 py-4 text-gray-500 italic">Bu kategoride henüz soru bulunmamaktadır.</div>
+                @endforelse
             </div>
         </div>
+
+        <!-- Category: Shipping Questions -->
+        <div class="bg-white rounded-xl shadow-sm">
+            <div class="bg-primary/10 px-6 py-4">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                    <i class="ri-truck-line mr-3 text-primary text-2xl"></i>
+                    Kargo ve Teslimat
+                </h2>
+            </div>
+            <div class="divide-y divide-gray-100">
+                @forelse($shippingFaqs as $index => $faq)
+                    <div class="faq-item" x-data="{ open: false }">
+                        <button 
+                            class="w-full py-5 px-6 flex justify-between items-center text-left hover:bg-gray-50 transition-colors focus:outline-none group"
+                            @click="open = !open"
+                        >
+                            <span class="font-medium text-gray-900 text-base md:text-lg group-hover:text-primary transition-colors">{{ $faq->question }}</span>
+                            <span class="ml-4 flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 group-hover:bg-primary/10 transition-colors">
+                                <i class="ri-arrow-down-s-line text-lg text-gray-500 group-hover:text-primary transition-transform duration-300" :class="{'rotate-180': open}"></i>
+                            </span>
+                        </button>
+                        <div 
+                            class="overflow-hidden transition-all duration-300 max-h-0 bg-gray-50/50"
+                            x-ref="content"
+                            :style="open ? 'max-height: ' + $refs.content.scrollHeight + 'px' : 'max-height: 0px'"
+                        >
+                            <div class="p-6 prose prose-sm max-w-none">
+                                {!! $faq->answer !!}
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="px-6 py-4 text-gray-500 italic">Bu kategoride henüz soru bulunmamaktadır.</div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Category: Return & Refund Questions -->
+        <div class="bg-white rounded-xl shadow-sm">
+            <div class="bg-primary/10 px-6 py-4">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                    <i class="ri-arrow-go-back-line mr-3 text-primary text-2xl"></i>
+                    İade ve Geri Ödeme
+                </h2>
+            </div>
+            <div class="divide-y divide-gray-100">
+                @forelse($returnFaqs as $index => $faq)
+                    <div class="faq-item" x-data="{ open: false }">
+                        <button 
+                            class="w-full py-5 px-6 flex justify-between items-center text-left hover:bg-gray-50 transition-colors focus:outline-none group"
+                            @click="open = !open"
+                        >
+                            <span class="font-medium text-gray-900 text-base md:text-lg group-hover:text-primary transition-colors">{{ $faq->question }}</span>
+                            <span class="ml-4 flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 group-hover:bg-primary/10 transition-colors">
+                                <i class="ri-arrow-down-s-line text-lg text-gray-500 group-hover:text-primary transition-transform duration-300" :class="{'rotate-180': open}"></i>
+                            </span>
+                        </button>
+                        <div 
+                            class="overflow-hidden transition-all duration-300 max-h-0 bg-gray-50/50"
+                            x-ref="content"
+                            :style="open ? 'max-height: ' + $refs.content.scrollHeight + 'px' : 'max-height: 0px'"
+                        >
+                            <div class="p-6 prose prose-sm max-w-none">
+                                {!! $faq->answer !!}
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="px-6 py-4 text-gray-500 italic">Bu kategoride henüz soru bulunmamaktadır.</div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Category: Account Questions -->
+        <div class="bg-white rounded-xl shadow-sm">
+            <div class="bg-primary/10 px-6 py-4">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                    <i class="ri-user-settings-line mr-3 text-primary text-2xl"></i>
+                    Hesap
+                </h2>
+            </div>
+            <div class="divide-y divide-gray-100">
+                @forelse($accountFaqs as $index => $faq)
+                    <div class="faq-item" x-data="{ open: false }">
+                        <button 
+                            class="w-full py-5 px-6 flex justify-between items-center text-left hover:bg-gray-50 transition-colors focus:outline-none group"
+                            @click="open = !open"
+                        >
+                            <span class="font-medium text-gray-900 text-base md:text-lg group-hover:text-primary transition-colors">{{ $faq->question }}</span>
+                            <span class="ml-4 flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 group-hover:bg-primary/10 transition-colors">
+                                <i class="ri-arrow-down-s-line text-lg text-gray-500 group-hover:text-primary transition-transform duration-300" :class="{'rotate-180': open}"></i>
+                            </span>
+                        </button>
+                        <div 
+                            class="overflow-hidden transition-all duration-300 max-h-0 bg-gray-50/50"
+                            x-ref="content"
+                            :style="open ? 'max-height: ' + $refs.content.scrollHeight + 'px' : 'max-height: 0px'"
+                        >
+                            <div class="p-6 prose prose-sm max-w-none">
+                                {!! $faq->answer !!}
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="px-6 py-4 text-gray-500 italic">Bu kategoride henüz soru bulunmamaktadır.</div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Category: Payment Questions -->
+        <div class="bg-white rounded-xl shadow-sm">
+            <div class="bg-primary/10 px-6 py-4">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                    <i class="ri-secure-payment-line mr-3 text-primary text-2xl"></i>
+                    Ödeme
+                </h2>
+            </div>
+            <div class="divide-y divide-gray-100">
+                @forelse($paymentFaqs as $index => $faq)
+                    <div class="faq-item" x-data="{ open: false }">
+                        <button 
+                            class="w-full py-5 px-6 flex justify-between items-center text-left hover:bg-gray-50 transition-colors focus:outline-none group"
+                            @click="open = !open"
+                        >
+                            <span class="font-medium text-gray-900 text-base md:text-lg group-hover:text-primary transition-colors">{{ $faq->question }}</span>
+                            <span class="ml-4 flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 group-hover:bg-primary/10 transition-colors">
+                                <i class="ri-arrow-down-s-line text-lg text-gray-500 group-hover:text-primary transition-transform duration-300" :class="{'rotate-180': open}"></i>
+                            </span>
+                        </button>
+                        <div 
+                            class="overflow-hidden transition-all duration-300 max-h-0 bg-gray-50/50"
+                            x-ref="content"
+                            :style="open ? 'max-height: ' + $refs.content.scrollHeight + 'px' : 'max-height: 0px'"
+                        >
+                            <div class="p-6 prose prose-sm max-w-none">
+                                {!! $faq->answer !!}
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="px-6 py-4 text-gray-500 italic">Bu kategoride henüz soru bulunmamaktadır.</div>
+                @endforelse
+            </div>
+        </div>
+    </div>
+    
+    <!-- Contact CTA -->
+    <div class="bg-primary/5 rounded-xl p-8 md:p-10 text-center shadow-sm">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-6">
+            <i class="ri-customer-service-2-line text-3xl text-primary"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-800 mb-3">Sorunuzu bulamadınız mı?</h3>
+        <p class="mb-6 text-gray-600 max-w-lg mx-auto">İhtiyaç duyduğunuz cevabı bulamadıysanız, müşteri destek ekibimiz size yardımcı olmaktan memnuniyet duyacaktır.</p>
+        <a href="{{ route('pages.show', 'iletisim') }}" class="inline-flex items-center justify-center bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-md transition-colors">
+            <i class="ri-mail-send-line mr-2"></i>
+            İletişime Geçin
+        </a>
     </div>
 </div>
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add custom accordion functionality if needed
-        const accordionButtons = document.querySelectorAll('.accordion-button');
-        
-        accordionButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const isExpanded = this.getAttribute('aria-expanded') === 'true';
-                this.setAttribute('aria-expanded', !isExpanded);
-                
-                const target = document.querySelector(this.getAttribute('data-bs-target'));
-                if (target) {
-                    if (isExpanded) {
-                        target.classList.remove('show');
-                    } else {
-                        target.classList.add('show');
-                    }
-                }
-            });
-        });
-    });
-</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+    .prose p {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+</style>
 @endpush
 @endsection 
