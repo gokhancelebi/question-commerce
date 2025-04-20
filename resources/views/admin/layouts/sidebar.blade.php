@@ -65,6 +65,14 @@
                     </a>
                 </li>
 
+                <!-- FAQs (SSS) -->
+                <li class="nav-item">
+                    <a href="{{ route('admin.faqs.index') }}" class="nav-link {{ request()->routeIs('admin.faqs.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-question"></i>
+                        <p>SSS (Sık Sorulan Sorular)</p>
+                    </a>
+                </li>
+
                 <!-- Contact Messages -->
                 <li class="nav-item">
                     <a href="{{ route('admin.contacts.index') }}" class="nav-link {{ request()->routeIs('admin.contacts.*') ? 'active' : '' }}">
