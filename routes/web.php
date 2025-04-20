@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\QuestionAnswerController;
 use App\Http\Controllers\Admin\ProductMatchController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Front\CartController;
+use App\Http\Controllers\Front\CheckoutController;
+use App\Http\Controllers\Front\OrderController as FrontOrderController;
 
 // Front routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -41,7 +43,8 @@ Route::middleware('auth')->group(function () {
     // User account routes
     Route::get('/account', [App\Http\Controllers\Front\UserController::class, 'account'])->name('user.account');
     Route::post('/account', [App\Http\Controllers\Front\UserController::class, 'updateAccount'])->name('user.account.update');
-    Route::get('/account/orders', [App\Http\Controllers\Front\UserController::class, 'orders'])->name('user.orders');
+    Route::get('/account/orders', [App\Http\Controllers\Front\OrderController::class, 'index'])->name('user.orders');
+    Route::get('/account/orders/{order}', [App\Http\Controllers\Front\OrderController::class, 'show'])->name('user.orders.show');
 });
 
 // Password Reset Routes
@@ -87,3 +90,9 @@ Route::patch('/cart/update', [App\Http\Controllers\Front\CartController::class, 
 Route::delete('/cart/remove', [App\Http\Controllers\Front\CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [App\Http\Controllers\Front\CartController::class, 'clear'])->name('cart.clear');
 Route::get('/cart-data', [CartController::class, 'getCartData'])->name('cart.data');
+
+// Checkout and Order routes
+Route::get('/checkout', [App\Http\Controllers\Front\CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [App\Http\Controllers\Front\CheckoutController::class, 'process'])->name('checkout.process');
+Route::get('/order/success/{order}', [App\Http\Controllers\Front\OrderController::class, 'success'])->name('order.success');
+Route::get('/order/failed', [App\Http\Controllers\Front\OrderController::class, 'failed'])->name('order.failed');
