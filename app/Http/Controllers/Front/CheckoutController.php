@@ -27,7 +27,16 @@ class CheckoutController extends Controller
         $shipping = $subtotal > 0 ? 29.99 : 0;
         $total = $subtotal + $shipping;
         
-        return view('front.checkout.index', compact('cartItems', 'subtotal', 'shipping', 'total'));
+        // Get user's default shipping info if available
+        $defaultShippingInfo = null;
+        if (auth()->check()) {
+            $user = auth()->user();
+            if ($user->hasDefaultShippingInfo()) {
+                $defaultShippingInfo = $user->getDefaultShippingInfo();
+            }
+        }
+        
+        return view('front.checkout.index', compact('cartItems', 'subtotal', 'shipping', 'total', 'defaultShippingInfo'));
     }
     
     /**
@@ -44,6 +53,7 @@ class CheckoutController extends Controller
             'city' => 'required|string|max:255',
             'district' => 'required|string|max:255',
             'address' => 'required|string',
+            'save_info' => 'nullable|boolean',
         ]);
         
         $cartItems = Session::get('cart', []);
@@ -56,6 +66,18 @@ class CheckoutController extends Controller
         $total = $this->calculateSubtotal($cartItems);
         
         try {
+            // If user is logged in and requested to save shipping info
+            if (auth()->check() && isset($validated['save_info']) && $validated['save_info']) {
+                $user = auth()->user();
+                $user->default_shipping_name = $validated['shipping_name'];
+                $user->default_shipping_surname = $validated['shipping_surname'];
+                $user->default_shipping_phone = $validated['shipping_phone'];
+                $user->default_city = $validated['city'];
+                $user->default_district = $validated['district'];
+                $user->default_address = $validated['address'];
+                $user->save();
+            }
+            
             // Create order
             $order = new Order();
             $order->user_id = auth()->check() ? auth()->id() : null;

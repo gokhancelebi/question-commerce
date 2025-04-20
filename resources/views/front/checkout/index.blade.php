@@ -20,7 +20,7 @@
                                     <label for="shipping_name" class="text-sm font-medium text-gray-700">Ad</label>
                                     <input type="text" name="shipping_name" id="shipping_name" 
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-                                        value="{{ old('shipping_name', auth()->user()->name ?? '') }}" required>
+                                        value="{{ old('shipping_name', $defaultShippingInfo['shipping_name'] ?? auth()->user()->name ?? '') }}" required>
                                     @error('shipping_name')
                                         <p class="text-red-500 text-xs">{{ $message }}</p>
                                     @enderror
@@ -30,7 +30,7 @@
                                     <label for="shipping_surname" class="text-sm font-medium text-gray-700">Soyad</label>
                                     <input type="text" name="shipping_surname" id="shipping_surname" 
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-                                        value="{{ old('shipping_surname') }}" required>
+                                        value="{{ old('shipping_surname', $defaultShippingInfo['shipping_surname'] ?? auth()->user()->surname ?? '') }}" required>
                                     @error('shipping_surname')
                                         <p class="text-red-500 text-xs">{{ $message }}</p>
                                     @enderror
@@ -41,7 +41,7 @@
                                 <label for="shipping_email" class="text-sm font-medium text-gray-700">E-posta</label>
                                 <input type="email" name="shipping_email" id="shipping_email" 
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-                                    value="{{ old('shipping_email', auth()->user()->email ?? '') }}" required>
+                                    value="{{ old('shipping_email', $defaultShippingInfo['shipping_email'] ?? auth()->user()->email ?? '') }}" required>
                                 @error('shipping_email')
                                     <p class="text-red-500 text-xs">{{ $message }}</p>
                                 @enderror
@@ -51,7 +51,7 @@
                                 <label for="shipping_phone" class="text-sm font-medium text-gray-700">Telefon</label>
                                 <input type="text" name="shipping_phone" id="shipping_phone" 
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-                                    value="{{ old('shipping_phone') }}" required>
+                                    value="{{ old('shipping_phone', $defaultShippingInfo['shipping_phone'] ?? '') }}" required>
                                 @error('shipping_phone')
                                     <p class="text-red-500 text-xs">{{ $message }}</p>
                                 @enderror
@@ -62,7 +62,7 @@
                                     <label for="city" class="text-sm font-medium text-gray-700">İl</label>
                                     <input type="text" name="city" id="city" 
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-                                        value="{{ old('city') }}" required>
+                                        value="{{ old('city', $defaultShippingInfo['city'] ?? '') }}" required>
                                     @error('city')
                                         <p class="text-red-500 text-xs">{{ $message }}</p>
                                     @enderror
@@ -72,7 +72,7 @@
                                     <label for="district" class="text-sm font-medium text-gray-700">İlçe</label>
                                     <input type="text" name="district" id="district" 
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-                                        value="{{ old('district') }}" required>
+                                        value="{{ old('district', $defaultShippingInfo['district'] ?? '') }}" required>
                                     @error('district')
                                         <p class="text-red-500 text-xs">{{ $message }}</p>
                                     @enderror
@@ -83,11 +83,20 @@
                                 <label for="address" class="text-sm font-medium text-gray-700">Adres</label>
                                 <textarea name="address" id="address" rows="3" 
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-                                    required>{{ old('address') }}</textarea>
+                                    required>{{ old('address', $defaultShippingInfo['address'] ?? '') }}</textarea>
                                 @error('address')
                                     <p class="text-red-500 text-xs">{{ $message }}</p>
                                 @enderror
                             </div>
+                            
+                            @auth
+                            <div class="flex items-center mt-4">
+                                <input type="checkbox" id="save_info" name="save_info" value="1" class="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary" {{ old('save_info') ? 'checked' : '' }}>
+                                <label for="save_info" class="ml-2 text-sm text-gray-700">
+                                    Bu bilgileri hesabıma kaydet
+                                </label>
+                            </div>
+                            @endauth
                         </div>
                     </div>
                 </div>

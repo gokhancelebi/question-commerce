@@ -48,12 +48,27 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'current_password' => ['nullable', 'string'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            // Shipping information fields
+            'default_shipping_name' => ['nullable', 'string', 'max:255'],
+            'default_shipping_surname' => ['nullable', 'string', 'max:255'],
+            'default_shipping_phone' => ['nullable', 'string', 'max:20'],
+            'default_city' => ['nullable', 'string', 'max:255'],
+            'default_district' => ['nullable', 'string', 'max:255'],
+            'default_address' => ['nullable', 'string'],
         ]);
         
         // Update basic information
         $user->name = $validated['name'];
         $user->surname = $validated['surname'];
         $user->email = $validated['email'];
+        
+        // Update shipping information
+        $user->default_shipping_name = $validated['default_shipping_name'];
+        $user->default_shipping_surname = $validated['default_shipping_surname'];
+        $user->default_shipping_phone = $validated['default_shipping_phone'];
+        $user->default_city = $validated['default_city'];
+        $user->default_district = $validated['default_district'];
+        $user->default_address = $validated['default_address'];
         
         // Check if password change was requested
         if (!empty($validated['current_password']) && !empty($validated['password'])) {
