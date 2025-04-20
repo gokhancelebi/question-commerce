@@ -36,6 +36,11 @@ Route::middleware('guest')->group(function () {
 // Auth routes (only accessible when logged in)
 Route::middleware('auth')->group(function () {
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+    
+    // User account routes
+    Route::get('/account', [App\Http\Controllers\Front\UserController::class, 'account'])->name('user.account');
+    Route::post('/account', [App\Http\Controllers\Front\UserController::class, 'updateAccount'])->name('user.account.update');
+    Route::get('/account/orders', [App\Http\Controllers\Front\UserController::class, 'orders'])->name('user.orders');
 });
 
 // Password Reset Routes

@@ -15,10 +15,18 @@
     @vite('resources/css/app.css')
 
     <style>
-        /* Dropdown menu fixes */
+        /* Dropdown menu styles */
+        .user-dropdown {
+            position: relative;
+        }
+        
         .user-dropdown-menu {
             display: none;
-            pointer-events: auto;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 5px;
+            z-index: 50;
         }
         
         .user-dropdown:hover .user-dropdown-menu {
@@ -47,18 +55,18 @@
             <div class="flex items-center space-x-4">
                 @auth
                 <div class="relative user-dropdown">
-                    <button class="text-gray-800 hover:text-primary flex items-center">
+                    <button id="userDropdownBtn" class="text-gray-800 hover:text-primary flex items-center">
                         <div class="w-10 h-10 flex items-center justify-center">
                             <i class="ri-user-line ri-lg"></i>
                         </div>
                         <span class="ml-1 hidden sm:inline">{{ Auth::user()->name }}</span>
                         <i class="ri-arrow-down-s-line ml-1"></i>
                     </button>
-                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 user-dropdown-menu">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <div id="userDropdownMenu" class="absolute right-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50 user-dropdown-menu">
+                        <a href="{{ route('user.account') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="ri-user-settings-line mr-2"></i> Hesabım
                         </a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <a href="{{ route('user.orders') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                             <i class="ri-history-line mr-2"></i> Siparişlerim
                         </a>
                         <div class="border-t border-gray-100"></div>
@@ -961,6 +969,29 @@ to { opacity: 0; transform: translateY(-10px); }
         // Initialize the first question as active
         showQuestionSlide(1);
         updateCartUI();
+
+        // User dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const userDropdownBtn = document.getElementById('userDropdownBtn');
+            const userDropdownMenu = document.getElementById('userDropdownMenu');
+            
+            if (userDropdownBtn && userDropdownMenu) {
+                // Toggle dropdown on button click - keeping this as a backup for mobile
+                userDropdownBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Check if menu is visible (could be visible from hover)
+                    const isVisible = window.getComputedStyle(userDropdownMenu).display !== 'none';
+                    
+                    if (isVisible) {
+                        userDropdownMenu.style.display = 'none';
+                    } else {
+                        userDropdownMenu.style.display = 'block';
+                    }
+                });
+            }
+        });
     </script>
 
     @yield('scripts')
