@@ -18,6 +18,7 @@
         /* Dropdown menu styles */
         .user-dropdown {
             position: relative;
+            z-index: 60; /* Ensure dropdown container is above other elements */
         }
         
         .user-dropdown-menu {
@@ -25,11 +26,25 @@
             position: absolute;
             right: 0;
             top: 100%;
-            margin-top: 5px;
+            margin-top: 0; /* Remove margin to eliminate gap */
+            padding-top: 10px; /* Add padding at top instead of margin */
             z-index: 50;
         }
         
-        .user-dropdown:hover .user-dropdown-menu {
+        /* This creates an invisible bridge between button and dropdown */
+        .user-dropdown::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 20px; /* Taller bridge */
+            display: block;
+        }
+        
+        .user-dropdown:hover .user-dropdown-menu,
+        .user-dropdown-menu:hover,
+        .user-dropdown:hover::after {
             display: block;
         }
     </style>
@@ -62,20 +77,22 @@
                         <span class="ml-1 hidden sm:inline">{{ Auth::user()->name }}</span>
                         <i class="ri-arrow-down-s-line ml-1"></i>
                     </button>
-                    <div id="userDropdownMenu" class="absolute right-0 top-full mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50 user-dropdown-menu">
-                        <a href="{{ route('user.account') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="ri-user-settings-line mr-2"></i> Hesabım
-                        </a>
-                        <a href="{{ route('user.orders') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="ri-history-line mr-2"></i> Siparişlerim
-                        </a>
-                        <div class="border-t border-gray-100"></div>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="ri-logout-box-line mr-2"></i> Çıkış Yap
-                            </button>
-                        </form>
+                    <div id="userDropdownMenu" class="absolute right-0 top-full w-48 user-dropdown-menu">
+                        <div class="bg-white rounded-md shadow-lg py-1">
+                            <a href="{{ route('user.account') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="ri-user-settings-line mr-2"></i> Hesabım
+                            </a>
+                            <a href="{{ route('user.orders') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <i class="ri-history-line mr-2"></i> Siparişlerim
+                            </a>
+                            <div class="border-t border-gray-100 mt-1"></div>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="ri-logout-box-line mr-2"></i> Çıkış Yap
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 @else
@@ -972,25 +989,9 @@ to { opacity: 0; transform: translateY(-10px); }
 
         // User dropdown functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const userDropdownBtn = document.getElementById('userDropdownBtn');
-            const userDropdownMenu = document.getElementById('userDropdownMenu');
+            // Other initialization code can go here if needed
             
-            if (userDropdownBtn && userDropdownMenu) {
-                // Toggle dropdown on button click - keeping this as a backup for mobile
-                userDropdownBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    // Check if menu is visible (could be visible from hover)
-                    const isVisible = window.getComputedStyle(userDropdownMenu).display !== 'none';
-                    
-                    if (isVisible) {
-                        userDropdownMenu.style.display = 'none';
-                    } else {
-                        userDropdownMenu.style.display = 'block';
-                    }
-                });
-            }
+            // User dropdown now handled by CSS hover only
         });
     </script>
 
