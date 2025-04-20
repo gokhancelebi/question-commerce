@@ -175,9 +175,14 @@
                 </div>
                 <h4 class="text-xl font-medium mb-2">Sepetiniz boş</h4>
                 <p class="text-gray-500 mb-6">Ürünleri keşfedin ve sepetinize ekleyin</p>
-                <a href="{{ route('home') }}" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md transition-colors">
-                    Alışverişe Başla
-                </a>
+                <div class="flex space-x-3">
+                    <a href="{{ route('cart.index') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-center transition-colors">
+                        Sepete Git
+                    </a>
+                    <a href="{{ route('home') }}" class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md text-center transition-colors">
+                        Yeniden Başlat
+                    </a>
+                </div>
             </div>
             <!-- Cart With Items State -->
             <div id="cartWithItemsState" class="hidden flex-1 flex flex-col">
@@ -190,12 +195,17 @@
                         <span class="font-medium">Toplam:</span>
                         <span class="font-bold" id="cartTotal">₺0.00</span>
                     </div>
-                    <div class="flex space-x-3">
+                    <div class="flex gap-2">
                         <a href="{{ route('cart.index') }}" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-center transition-colors">
                             Sepete Git
                         </a>
                         <a href="{{ route('checkout.index') }}" class="flex-1 bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md text-center transition-colors">
                             Ödeme Yap
+                        </a>
+                    </div>
+                    <div class="mt-2">
+                        <a href="{{ route('home') }}" class="w-full block border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-center hover:bg-gray-50 transition-colors">
+                            Yeniden Başlat
                         </a>
                     </div>
                 </div>
