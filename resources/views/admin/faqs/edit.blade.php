@@ -25,18 +25,3 @@
     </div>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-    // Add editor for content if needed
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof ClassicEditor !== 'undefined') {
-            ClassicEditor
-                .create(document.querySelector('#answer'))
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-    });
-</script>
-@endpush 

@@ -88,3 +88,24 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Summernote editor for product description
+        $('#description').summernote({
+            height: 200,
+            lang: 'tr-TR',
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link', 'picture']],
+                ['view', ['fullscreen', 'codeview']]
+            ],
+            placeholder: 'Ürün açıklamasını buraya girin...'
+        });
+    });
+</script>
+@endpush

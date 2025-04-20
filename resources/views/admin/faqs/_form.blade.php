@@ -36,15 +36,21 @@
 
 @push('scripts')
 <script>
-    // Add editor for content if needed
     document.addEventListener('DOMContentLoaded', function() {
-        if (typeof ClassicEditor !== 'undefined') {
-            ClassicEditor
-                .create(document.querySelector('#answer'))
-                .catch(error => {
-                    console.error(error);
-                });
-        }
+        // Initialize Summernote editor
+        $('#answer').summernote({
+            height: 250,
+            lang: 'tr-TR',
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
     });
 </script>
-@endpush 
+@endpush

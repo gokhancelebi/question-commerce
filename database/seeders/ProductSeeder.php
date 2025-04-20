@@ -44,7 +44,17 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            Product::create($product);
+            $product = Product::create($product);
+
+            $product->images()->create([
+                'image_path' => 'uploads/products/gallery/gallery_1744044765_67f402ddb5790_0.jpg',
+            ]);
+            $product->images()->create([
+                'image_path' => 'uploads/products/gallery/gallery_1744044769_67f402e1995ac_0.jpg',
+            ]);
+            $product->images()->create([
+                'image_path' => 'uploads/products/gallery/gallery_1744044784_67f402f009aa0_0.jpg',
+            ]);
         }
     }
 }
