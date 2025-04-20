@@ -37,6 +37,7 @@ class Order extends Model
         'shipping_surname',
         'shipping_phone',
         'shipping_email',
+        'shipping_code',
         'city',
         'district',
         'address'

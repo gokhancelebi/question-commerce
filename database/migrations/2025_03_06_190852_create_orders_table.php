@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('shipping_surname');
             $table->string('shipping_phone');
             $table->string('shipping_email');
+            $table->string('shipping_code')->nullable();
             $table->string('city');
             $table->string('district');
             $table->text('address');
