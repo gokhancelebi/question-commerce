@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\QuestionAnswerController;
 use App\Http\Controllers\Admin\ProductMatchController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\Front\CartController;
 
 // Front routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -78,3 +79,11 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
 
 // Front routes
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+// Cart routes
+Route::get('/cart', [App\Http\Controllers\Front\CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [App\Http\Controllers\Front\CartController::class, 'add'])->name('cart.add');
+Route::patch('/cart/update', [App\Http\Controllers\Front\CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/remove', [App\Http\Controllers\Front\CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [App\Http\Controllers\Front\CartController::class, 'clear'])->name('cart.clear');
+Route::get('/cart-data', [CartController::class, 'getCartData'])->name('cart.data');

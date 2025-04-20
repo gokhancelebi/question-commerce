@@ -17,7 +17,7 @@ everytime when you change anything related to migration files ask for php artisa
 - website and admin panel will be turkish
 - Users will choose answers for questions in home page accordion, for example we will choose 5 question and will will define a product for each answer combinations in admin panel, in home user will reply all questions and end of the exam accordion user will see a product to add to cart and re-reply all questions to add more products to card.
 - we have indepentent register/login pages and also popups. Popups are disabled we dont use them yet but they should have the same functionality as independent papges but not activeted.
-
+- in home after uses chooses a product we show external url if it provided, if external url not provided we show add to cart button
 
 # Admin related routes
 - admin panel design should be consistent and responsive

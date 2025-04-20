@@ -103,12 +103,12 @@
                 </a>
                 @endauth
                 
-                <a href="#" id="cartButton" class="text-gray-800 hover:text-primary relative">
+                <a href="{{ route('cart.index') }}" id="cartButton" class="text-gray-800 hover:text-primary relative">
                     <div class="w-10 h-10 flex items-center justify-center">
                         <i class="ri-shopping-cart-line ri-lg"></i>
                     </div>
                     <span id="cartCount"
-                        class="absolute -top-1 -right-1 bg-primary text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">0</span>
+                        class="absolute -top-1 -right-1 bg-primary text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">{{ count(Session::get('cart', [])) }}</span>
                 </a>
                 
                 @guest
@@ -537,26 +537,35 @@
         }
         // Function to update cart UI
         function updateCartUI() {
-            // Update cart count
-            const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
-            cartCount.textContent = totalItems;
-            // Show/hide appropriate cart state
-            if (cartItems.length === 0) {
-                emptyCartState.classList.remove('hidden');
-                cartWithItemsState.classList.add('hidden');
-            } else {
-                emptyCartState.classList.add('hidden');
-                cartWithItemsState.classList.remove('hidden');
-                // Clear and rebuild cart items list
-                cartItemsList.innerHTML = '';
-                // Calculate totals
-                let subtotal = 0;
-                cartItems.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
-                    subtotal += itemTotal;
-                    const itemElement = document.createElement('div');
-                    itemElement.className = 'flex items-center border-b border-gray-100 pb-4';
-                    itemElement.innerHTML = `
+            // Fetch current cart data from session
+            fetch('/cart-data', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update cart count
+                document.getElementById('cartCount').textContent = data.cartCount;
+                
+                // Show/hide appropriate cart state
+                if (data.cartItems.length === 0) {
+                    emptyCartState.classList.remove('hidden');
+                    cartWithItemsState.classList.add('hidden');
+                } else {
+                    emptyCartState.classList.add('hidden');
+                    cartWithItemsState.classList.remove('hidden');
+                    
+                    // Clear and rebuild cart items list
+                    cartItemsList.innerHTML = '';
+                    
+                    // Add cart items to UI
+                    data.cartItems.forEach(item => {
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'flex items-center border-b border-gray-100 pb-4';
+                        itemElement.innerHTML = `
 <div class="w-20 h-20 flex-shrink-0 bg-gray-100 rounded overflow-hidden mr-4">
 <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover object-center">
 </div>
@@ -565,65 +574,116 @@
 <p class="text-sm text-gray-500">${item.specs}</p>
 <div class="flex items-center justify-between mt-2">
 <div class="flex items-center border rounded">
-<button class="decrease-quantity px-2 py-1 text-gray-500 hover:text-gray-700" data-id="${item.id}">
+<button class="quick-decrease-quantity px-2 py-1 text-gray-500 hover:text-gray-700" data-id="${item.id}">
 <i class="ri-subtract-line"></i>
 </button>
 <span class="px-2 py-1 border-x">${item.quantity}</span>
-<button class="increase-quantity px-2 py-1 text-gray-500 hover:text-gray-700" data-id="${item.id}">
+<button class="quick-increase-quantity px-2 py-1 text-gray-500 hover:text-gray-700" data-id="${item.id}">
 <i class="ri-add-line"></i>
 </button>
 </div>
 <div class="flex items-center">
-<span class="font-medium mr-3">${formatPrice(itemTotal)}</span>
-<button class="remove-item text-gray-400 hover:text-red-500" data-id="${item.id}">
+<span class="font-medium mr-3">${formatPrice(item.price * item.quantity)}</span>
+<button class="quick-remove-item text-gray-400 hover:text-red-500" data-id="${item.id}">
 <i class="ri-delete-bin-line"></i>
 </button>
 </div>
 </div>
 </div>
 `;
-                    cartItemsList.appendChild(itemElement);
-                });
-                // Add event listeners to quantity buttons and remove buttons
-                cartItemsList.querySelectorAll('.decrease-quantity').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const id = parseInt(this.getAttribute('data-id'));
-                        const item = cartItems.find(item => item.id === id);
-                        if (item && item.quantity > 1) {
-                            item.quantity--;
+                        cartItemsList.appendChild(itemElement);
+                    });
+                    
+                    // Update totals in UI
+                    cartSubtotal.textContent = formatPrice(data.subtotal);
+                    cartShipping.textContent = formatPrice(data.shipping);
+                    cartTotal.textContent = formatPrice(data.total);
+                    
+                    // Add event listeners to quantity buttons and remove buttons
+                    addQuickCartEventListeners();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching cart data:', error);
+            });
+        }
+        
+        // Function to add event listeners to quick cart modal buttons
+        function addQuickCartEventListeners() {
+            // Quick decrease quantity
+            cartItemsList.querySelectorAll('.quick-decrease-quantity').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    
+                    fetch('{{ route('cart.update') }}', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            product_id: id,
+                            quantity: parseInt(this.nextElementSibling.textContent) - 1
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
                             updateCartUI();
                         }
                     });
                 });
-                cartItemsList.querySelectorAll('.increase-quantity').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const id = parseInt(this.getAttribute('data-id'));
-                        const item = cartItems.find(item => item.id === id);
-                        if (item) {
-                            item.quantity++;
+            });
+            
+            // Quick increase quantity
+            cartItemsList.querySelectorAll('.quick-increase-quantity').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    
+                    fetch('{{ route('cart.update') }}', {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            product_id: id,
+                            quantity: parseInt(this.previousElementSibling.textContent) + 1
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
                             updateCartUI();
                         }
                     });
                 });
-                cartItemsList.querySelectorAll('.remove-item').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const id = parseInt(this.getAttribute('data-id'));
-                        const index = cartItems.findIndex(item => item.id === id);
-                        if (index !== -1) {
-                            cartItems.splice(index, 1);
+            });
+            
+            // Quick remove item
+            cartItemsList.querySelectorAll('.quick-remove-item').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    
+                    fetch('{{ route('cart.remove') }}', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            product_id: id
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
                             updateCartUI();
                             showNotification('Ürün sepetten çıkarıldı', 'info');
                         }
                     });
                 });
-                // Calculate shipping and total
-                const shipping = subtotal > 0 ? 29.99 : 0;
-                const total = subtotal + shipping;
-                // Update totals in UI
-                cartSubtotal.textContent = formatPrice(subtotal);
-                cartShipping.textContent = formatPrice(shipping);
-                cartTotal.textContent = formatPrice(total);
-            }
+            });
         }
         // Function to show notification
         function showNotification(message, type = 'success', isCheckout = false) {
@@ -740,10 +800,9 @@
         });
         // Cart modal functionality
         cartButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            cartModal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
-            updateCartUI(); // Update cart UI when opening
+            // Don't prevent default - let it navigate to cart page
+            // But we'll also update the cart UI on hover/click for quick preview
+            updateCartUI(); 
         });
         closeCartModal.addEventListener('click', function() {
             cartModal.classList.add('hidden');
@@ -781,36 +840,55 @@
                 updateCartUI();
             }, 2000);
         });
-        // Add event listeners to "Sepete Ekle" and "Alışverişe Devam Et" buttons
+        // For the "Add to Cart" functionality in product recommendations
         document.querySelectorAll('#productRecommendation button').forEach(button => {
             button.addEventListener('click', function() {
                 const isAddToCart = button.textContent.includes('Sepete Ekle');
                 if (isAddToCart) {
-                    // Add product to cart
+                    // Get product data from the recommended product
                     const product = mockProducts[0]; // Main recommended product
-                    const existingItem = cartItems.find(item => item.id === product.id);
-                    if (existingItem) {
-                        existingItem.quantity++;
-                    } else {
-                        cartItems.push({
-                            id: product.id,
+                    
+                    // Send AJAX request to add item to cart
+                    fetch('{{ route('cart.add') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            product_id: product.id,
                             name: product.name,
                             price: product.price,
                             image: product.image,
                             specs: product.specs,
                             quantity: 1
-                        });
-                    }
-                    // Update cart UI
-                    updateCartUI();
-                    showNotification(
-                        `Ürün sepete eklendi! Sepetinizde şimdi ${cartItems.reduce((total, item) => total + item.quantity, 0)} ürün var.`,
-                        'success');
-                    // Open cart modal after a short delay
-                    setTimeout(() => {
-                        cartModal.classList.remove('hidden');
-                        document.body.style.overflow = 'hidden';
-                    }, 1000);
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update cart count in header
+                            document.getElementById('cartCount').textContent = data.cartCount;
+                            
+                            // Show notification
+                            showNotification(
+                                `Ürün sepete eklendi! Sepetinizde şimdi ${data.cartCount} ürün var.`,
+                                'success');
+                            
+                            // Open cart modal after a short delay
+                            setTimeout(() => {
+                                cartModal.classList.remove('hidden');
+                                document.body.style.overflow = 'hidden';
+                                updateCartUI();
+                            }, 1000);
+                        } else {
+                            showNotification(data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('Bir hata oluştu', 'error');
+                    });
                 } else {
                     showNotification('Alışverişe devam ediyorsunuz. Daha fazla ürün keşfedin.', 'info');
                     // Scroll to top of page
