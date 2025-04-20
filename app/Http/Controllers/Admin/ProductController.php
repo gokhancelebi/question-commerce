@@ -96,7 +96,9 @@ class ProductController extends Controller
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'boolean',
-            'external_url' => 'nullable|url|max:2048'
+            'external_url' => 'nullable|url|max:2048',
+            'delete_images' => 'nullable|array',
+            'delete_images.*' => 'nullable|integer|exists:product_images,id'
         ]);
 
         if ($request->hasFile('featured_image')) {
@@ -112,6 +114,23 @@ class ProductController extends Controller
         }
 
         $product->update($validated);
+
+        // Handle image deletions
+        if ($request->has('delete_images')) {
+            foreach ($request->delete_images as $imageId) {
+                $image = $product->images()->find($imageId);
+
+                if ($image) {
+                    // Delete the physical file
+                    if (file_exists(public_path($image->image_path))) {
+                        unlink(public_path($image->image_path));
+                    }
+
+                    // Delete the database record
+                    $image->delete();
+                }
+            }
+        }
 
         if ($request->hasFile('gallery')) {
             foreach ($request->file('gallery') as $index => $image) {

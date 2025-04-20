@@ -68,13 +68,28 @@
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
             @if($product->images->count() > 0)
-                <div class="mt-2">
-                    <div class="row g-2">
+                <div class="mt-3">
+                    <label class="form-label">Mevcut Galeri Resimleri</label>
+                    <div class="row g-2" id="galleryImagesContainer">
                         @foreach($product->images as $image)
-                            <div class="col-6">
-                                <img src="{{ asset($image->image_path) }}" alt="Galeri resmi" class="img-thumbnail w-100" style="height: 100px; object-fit: cover;">
+                            <div class="col-6 position-relative gallery-image-container mb-3" id="image-container-{{ $image->id }}">
+                                <div class="card h-100">
+                                    <img src="{{ asset($image->image_path) }}" alt="Galeri resmi" class="card-img-top" style="height: 100px; object-fit: cover;">
+                                    <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                                        <div class="form-check">
+                                            <input class="form-check-input delete-image-checkbox" type="checkbox" name="delete_images[]" value="{{ $image->id }}" id="delete_image_{{ $image->id }}" onchange="toggleImageVisibility(this, {{ $image->id }})">
+                                            <label class="form-check-label" for="delete_image_{{ $image->id }}">
+                                                Sil
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         @endforeach
+                    </div>
+                    <div class="mt-2">
+                        <button type="button" id="selectAllImages" class="btn btn-sm btn-outline-danger">Tümünü Seç</button>
+                        <button type="button" id="deselectAllImages" class="btn btn-sm btn-outline-secondary">Seçimi Kaldır</button>
                     </div>
                 </div>
             @endif
@@ -106,6 +121,46 @@
             ],
             placeholder: 'Ürün açıklamasını buraya girin...'
         });
+
+        // Image gallery selection functionality
+        const selectAllBtn = document.getElementById('selectAllImages');
+        const deselectAllBtn = document.getElementById('deselectAllImages');
+
+        if (selectAllBtn) {
+            selectAllBtn.addEventListener('click', function() {
+                document.querySelectorAll('.delete-image-checkbox').forEach(checkbox => {
+                    checkbox.checked = true;
+                    toggleImageVisibility(checkbox, checkbox.value);
+                });
+            });
+        }
+
+        if (deselectAllBtn) {
+            deselectAllBtn.addEventListener('click', function() {
+                document.querySelectorAll('.delete-image-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                    toggleImageVisibility(checkbox, checkbox.value);
+                });
+            });
+        }
     });
+
+    // Function to instantly toggle image visibility when checkbox is clicked
+    function toggleImageVisibility(checkbox, imageId) {
+        const container = document.getElementById('image-container-' + imageId);
+        if (container) {
+            if (checkbox.checked) {
+                container.style.opacity = '0.5';
+                container.querySelector('.card').style.borderColor = '#dc3545';
+                container.querySelector('.card').style.borderWidth = '2px';
+                container.querySelector('.form-check-label').textContent = 'Siliniyor';
+            } else {
+                container.style.opacity = '1';
+                container.querySelector('.card').style.borderColor = '';
+                container.querySelector('.card').style.borderWidth = '';
+                container.querySelector('.form-check-label').textContent = 'Sil';
+            }
+        }
+    }
 </script>
 @endpush
