@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const productRecommendation = document.getElementById('productRecommendation');
                 productRecommendation.innerHTML = `
                     <h3 class="text-2xl font-bold text-center mb-6">Mükemmel Eşleşmeniz</h3>
-                    <div class="bg-white rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl">
+                    <div class="bg-white rounded-lg overflow-hidden shadow-lg transition-all hover:shadow-xl" data-product-id="${bestMatch.id}">
                         <div class="aspect-w-16 aspect-h-9 relative h-64 p-6">
                             <img src="${bestMatch.image || 'https://via.placeholder.com/800x600'}"
                                 alt="${bestMatch.name}"
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         Satın Al
                                     </a>
                                 ` : `
-                                    <button class="bg-primary text-white px-6 py-3 !rounded-button hover:bg-opacity-90 transition-all flex-1 whitespace-nowrap flex items-center justify-center">
+                                    <button class="bg-primary text-white px-6 py-3 !rounded-button hover:bg-opacity-90 transition-all flex-1 whitespace-nowrap flex items-center justify-center" data-product-id="${bestMatch.id}">
                                         <div class="w-5 h-5 mr-2 flex items-center justify-center">
                                             <i class="ri-shopping-cart-line"></i>
                                         </div>
@@ -378,6 +378,116 @@ document.addEventListener('DOMContentLoaded', function() {
             removeLoadingIndicator();
         });
     });
+
+    // Add event listener for "Sepete Ekle" button after product recommendation is shown
+    document.addEventListener('click', function(event) {
+        // Check if the clicked element is the "Sepete Ekle" button or its child elements
+        const addToCartBtn = event.target.closest('button');
+        if (addToCartBtn && addToCartBtn.innerText.includes('Sepete Ekle')) {
+            
+            // Get the product data from the rendered HTML
+            const productContainer = addToCartBtn.closest('.bg-white.rounded-lg');
+            if (!productContainer) return;
+            
+            const productId = addToCartBtn.getAttribute('data-product-id');
+            const productName = productContainer.querySelector('h4.text-xl.font-bold').innerText;
+            const productPriceText = productContainer.querySelector('span.text-xl.font-bold.text-primary').innerText;
+            const productPrice = parseFloat(productPriceText.replace(/[^0-9,]/g, '').replace(',', '.'));
+            const productImage = productContainer.querySelector('img').getAttribute('src');
+            const productDescription = productContainer.querySelector('p.text-gray-600').innerText;
+            
+            // Send AJAX request to add item to cart
+            fetch('{{ route('cart.add') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    name: productName,
+                    price: productPrice,
+                    image: productImage,
+                    specs: productDescription,
+                    quantity: 1
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update cart count in header
+                    document.getElementById('cartCount').textContent = data.cartCount;
+                    
+                    // Show notification
+                    showNotification(
+                        `Ürün sepete eklendi! Sepetinizde şimdi ${data.cartCount} ürün var.`,
+                        'success');
+                    
+                    // Open cart modal after a short delay
+                    setTimeout(() => {
+                        const cartModal = document.getElementById('cartModal');
+                        if (cartModal) {
+                            cartModal.classList.remove('hidden');
+                            document.body.style.overflow = 'hidden';
+                            // Check if function exists before calling it
+                            if (typeof updateCartUI === 'function') {
+                                updateCartUI();
+                            }
+                        } else {
+                            // If modal doesn't exist, redirect to cart page
+                            window.location.href = '{{ route('cart.index') }}';
+                        }
+                    }, 1000);
+                } else {
+                    showNotification(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Bir hata oluştu', 'error');
+            });
+        }
+    });
 });
+
+// Add notification function if not already defined
+function showNotification(message, type = 'success', isCheckout = false) {
+    const iconClass = type === 'success' ? 'ri-check-line' : type === 'info' ? 'ri-information-line' : 'ri-error-warning-line';
+    const iconColor = type === 'success' ? 'text-green-500' : type === 'info' ? 'text-primary' : 'text-red-500';
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-20 right-4 bg-white p-4 rounded-lg shadow-lg z-50 animate-fade-in';
+    if (isCheckout) {
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <div class="w-8 h-8 flex items-center justify-center ${iconColor} mr-3">
+                    <i class="ri-secure-payment-line ri-lg"></i>
+                </div>
+                <div>
+                    <p class="font-medium">${message}</p>
+                    <p class="text-sm text-gray-600">Lütfen bekleyin...</p>
+                </div>
+            </div>
+        `;
+    } else {
+        notification.innerHTML = `
+            <div class="flex items-center">
+                <div class="w-8 h-8 flex items-center justify-center ${iconColor} mr-3">
+                    <i class="${iconClass} ri-lg"></i>
+                </div>
+                <div>
+                    <p class="font-medium">${message}</p>
+                </div>
+            </div>
+        `;
+    }
+    document.body.appendChild(notification);
+    // Remove notification after 3 seconds
+    setTimeout(() => {
+        notification.classList.add('animate-fade-out');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
 </script>
 @endpush
