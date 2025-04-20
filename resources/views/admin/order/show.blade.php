@@ -44,8 +44,16 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="3" class="text-end"><strong>Toplam:</strong></td>
-                                <td><strong>{{ number_format($order->total, 2) }} TL</strong></td>
+                                <td colspan="3" class="text-end"><strong>Ürünler Toplamı:</strong></td>
+                                <td><strong>{{ number_format($order->items_total, 2) }} TL</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Kargo Ücreti:</strong></td>
+                                <td><strong>{{ number_format($order->shipping_cost ?? 0, 2) }} TL</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Genel Toplam:</strong></td>
+                                <td><strong>{{ number_format($order->total_amount, 2) }} TL</strong></td>
                             </tr>
                         </tfoot>
                     </table>

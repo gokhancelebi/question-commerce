@@ -45,12 +45,12 @@
                                         <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item->id }}">
                                     </td>
                                     <td>
-                                        <input type="number" name="items[{{ $index }}][price]" class="form-control" 
+                                        <input type="number" name="items[{{ $index }}][price]" class="form-control item-price" 
                                                value="{{ old('items.'.$index.'.price', $item->price) }}" 
                                                step="0.01" min="0" required>
                                     </td>
                                     <td>
-                                        <input type="number" name="items[{{ $index }}][quantity]" class="form-control" 
+                                        <input type="number" name="items[{{ $index }}][quantity]" class="form-control item-quantity" 
                                                value="{{ old('items.'.$index.'.quantity', $item->quantity) }}" 
                                                min="1" required>
                                     </td>
@@ -119,6 +119,27 @@
                     </div>
                 </div>
 
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3 class="card-title">Sipariş Özeti</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Ürünler Toplamı:</span>
+                            <span id="items-total">{{ number_format($order->items_total, 2) }} TL</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Kargo Ücreti:</span>
+                            <span id="shipping-cost">{{ number_format($order->shipping_cost ?? 0, 2) }} TL</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span>Genel Toplam:</span>
+                            <span id="total-amount">{{ number_format($order->total_amount, 2) }} TL</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card">
                     <div class="card-body">
                         <button type="submit" class="btn btn-primary w-100">
@@ -134,6 +155,9 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+        // Initialize totals on page load
+        updateTotals();
+        
         // Add new item row
         $('#add-item').click(function() {
             const rowCount = $('#items-table tbody tr').length;
@@ -147,12 +171,12 @@
                         </select>
                     </td>
                     <td>
-                        <input type="number" name="items[${rowCount}][price]" class="form-control" 
+                        <input type="number" name="items[${rowCount}][price]" class="form-control item-price" 
                                value="{{ old('items.${rowCount}.price', '') }}" 
                                step="0.01" min="0" required>
                     </td>
                     <td>
-                        <input type="number" name="items[${rowCount}][quantity]" class="form-control" 
+                        <input type="number" name="items[${rowCount}][quantity]" class="form-control item-quantity" 
                                value="{{ old('items.${rowCount}.quantity', 1) }}" 
                                min="1" required>
                     </td>
@@ -164,12 +188,46 @@
                 </tr>
             `;
             $('#items-table tbody').append(newRow);
+            updateTotals();
         });
         
         // Remove item row
         $(document).on('click', '.remove-item', function() {
             $(this).closest('tr').remove();
+            updateTotals();
         });
+
+        // Update totals when inputs change
+        $(document).on('change', '.item-price, .item-quantity, #shipping_cost', function() {
+            updateTotals();
+        });
+
+        // Add the classes to existing inputs
+        $('input[name$="[price]"]').addClass('item-price');
+        $('input[name$="[quantity]"]').addClass('item-quantity');
+
+        // Calculate and update totals
+        function updateTotals() {
+            let itemsTotal = 0;
+            
+            // Calculate items total
+            $('#items-table tbody tr').each(function() {
+                const price = parseFloat($(this).find('.item-price').val()) || 0;
+                const quantity = parseInt($(this).find('.item-quantity').val()) || 0;
+                itemsTotal += price * quantity;
+            });
+            
+            // Get shipping cost
+            const shippingCost = parseFloat($('#shipping_cost').val()) || 0;
+            
+            // Calculate total amount
+            const totalAmount = itemsTotal + shippingCost;
+            
+            // Update the display
+            $('#items-total').text(itemsTotal.toFixed(2) + ' TL');
+            $('#shipping-cost').text(shippingCost.toFixed(2) + ' TL');
+            $('#total-amount').text(totalAmount.toFixed(2) + ' TL');
+        }
     });
 </script>
 @endpush

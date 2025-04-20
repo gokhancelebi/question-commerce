@@ -70,7 +70,7 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
     Route::resource('products', ProductController::class);
 
     // Orders
-    Route::resource('orders', OrderController::class)->except(['create', 'store', 'edit', 'destroy']);
+    Route::resource('orders', OrderController::class)->except(['create', 'store', 'destroy']);
 
     // Contact messages
     Route::resource('contacts', AdminContactController::class)->only(['index', 'show', 'destroy']);

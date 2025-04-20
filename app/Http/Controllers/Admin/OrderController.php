@@ -120,6 +120,9 @@ class OrderController extends Controller
             
             DB::commit();
             
+            // Refresh order to get updated totals
+            $order->refresh();
+            
             return redirect()->route('admin.orders.show', $order)
                 ->with('success', 'Sipariş başarıyla güncellendi.');
                 

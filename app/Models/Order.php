@@ -150,9 +150,12 @@ class Order extends Model
      */
     public function updateTotal(): self
     {
-        $this->total_amount = $this->items->sum(function ($item) {
+        $itemsTotal = $this->items->sum(function ($item) {
             return $item->price * $item->quantity;
         });
+        
+        // Add shipping cost to total
+        $this->total_amount = $itemsTotal + ($this->shipping_cost ?? 0);
         $this->save();
         
         return $this;
