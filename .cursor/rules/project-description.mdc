@@ -10,6 +10,8 @@ TailwindCSS 3.4.16
 
 everytime when you change anything related to migration files ask for php artisan migrate:fresh --seed command
 
+Dont register middleware alias use them as class
+
 # Project Short Description
 - It is a simple product based e-commerce website with a credit cart payment, cart(sepet) functionality,
 - There is a two type of user, one of them is admin one of them is customer
