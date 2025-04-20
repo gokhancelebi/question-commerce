@@ -45,10 +45,17 @@
                 <p class="text-sm text-gray-500">Toplam Tutar</p>
                 <p class="mt-1 font-medium">{{ number_format($order->total_amount, 2, ',', '.') }} TL</p>
             </div>
-            @if($order->shipping_code)
-            <div>
-                <p class="text-sm text-gray-500">Kargo Kodu</p>
-                <p class="mt-1 font-medium">{{ $order->shipping_code }}</p>
+            @if($order->shipping_company || $order->shipping_code)
+            <div class="col-span-2">
+                <p class="text-sm text-gray-500">Kargo Bilgileri</p>
+                <div class="mt-1">
+                    @if($order->shipping_company)
+                    <span class="font-medium mr-2">{{ $order->shipping_company }}</span>
+                    @endif
+                    @if($order->shipping_code)
+                    <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">Kargo Kodu: {{ $order->shipping_code }}</span>
+                    @endif
+                </div>
             </div>
             @endif
         </div>

@@ -82,6 +82,16 @@
                     <p><strong>Şehir:</strong> {{ $order->city }}</p>
                     <p><strong>İlçe:</strong> {{ $order->district }}</p>
                     <p><strong>Adres:</strong> {{ $order->address }}</p>
+                    @if($order->shipping_code || $order->shipping_company)
+                    <hr class="my-3">
+                    <h4 class="text-lg font-semibold mb-2">Kargo Bilgileri</h4>
+                    @if($order->shipping_company)
+                    <p><strong>Kargo Firması:</strong> {{ $order->shipping_company }}</p>
+                    @endif
+                    @if($order->shipping_code)
+                    <p><strong>Kargo Kodu:</strong> {{ $order->shipping_code }}</p>
+                    @endif
+                    @endif
                 </div>
             </div>
         </div>

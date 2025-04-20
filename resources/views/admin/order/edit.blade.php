@@ -107,6 +107,16 @@
                         </div>
 
                         <div class="form-group mb-3">
+                            <label for="shipping_company">Kargo Firması</label>
+                            <input type="text" name="shipping_company" id="shipping_company" 
+                                   class="form-control @error('shipping_company') is-invalid @enderror"
+                                   value="{{ old('shipping_company', $order->shipping_company) }}">
+                            @error('shipping_company')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group mb-3">
                             <label for="shipping_cost">Kargo Ücreti</label>
                             <input type="number" name="shipping_cost" id="shipping_cost" 
                                    class="form-control @error('shipping_cost') is-invalid @enderror"

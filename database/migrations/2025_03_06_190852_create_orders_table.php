@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('shipping_phone');
             $table->string('shipping_email');
             $table->string('shipping_code')->nullable();
+            $table->string('shipping_company')->nullable();
             $table->decimal('shipping_cost', 10, 2)->default(0);
             $table->string('city');
             $table->string('district');

@@ -68,6 +68,7 @@ class OrderController extends Controller
         $validated = $request->validate([
             'status' => 'required|in:pending,processing,completed,cancelled',
             'shipping_code' => 'nullable|string|max:255',
+            'shipping_company' => 'nullable|string|max:255',
             'shipping_cost' => 'required|numeric|min:0',
             'items' => 'required|array',
             'items.*.id' => 'sometimes|exists:order_items,id',
@@ -83,6 +84,7 @@ class OrderController extends Controller
             $order->update([
                 'status' => $validated['status'],
                 'shipping_code' => $validated['shipping_code'],
+                'shipping_company' => $validated['shipping_company'],
                 'shipping_cost' => $validated['shipping_cost'],
             ]);
             

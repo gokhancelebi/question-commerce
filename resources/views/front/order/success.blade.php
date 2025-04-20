@@ -88,11 +88,15 @@
                         <p class="font-medium text-lg text-primary">{{ number_format($order->total_amount, 2, ',', '.') }} TL</p>
                     </div>
                     
-                    @if($order->shipping_code)
+                    @if($order->shipping_code || $order->shipping_company)
                     <div class="mt-4 p-3 bg-blue-50 rounded-md">
                         <p class="flex items-center text-blue-800">
                             <i class="ri-truck-line mr-2"></i>
+                            @if($order->shipping_company)
+                            <span class="font-medium">{{ $order->shipping_company }}:</span>
+                            @else
                             <span class="font-medium">Kargo Kodu:</span>
+                            @endif
                             <span class="ml-2">{{ $order->shipping_code }}</span>
                         </p>
                     </div>
