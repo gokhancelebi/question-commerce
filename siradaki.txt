@@ -1,2 +1,8 @@
 Uyelikli - uyeliksiz odeme
 admin panele logo ayarlari
+sayfa basliklari
+google captcha v3
+smtp mail ve iletisim formu ayarlari
+sifre sifirlama ve uye olmada hatalar var
+siparis sonrasi stokdan dusme
+sepetteki urunu popupda silme
