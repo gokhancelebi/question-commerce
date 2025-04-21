@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 productRecommendation.innerHTML = `
                     <div class="text-center p-8 bg-white rounded-lg shadow-md">
                         <h3 class="text-xl font-semibold text-gray-800 mb-4">Üzgünüz!</h3>
-                        <p class="text-gray-600">Şu anda kriterlere uygun bir ürün bulamadık.</p>
+                        <p class="text-gray-600">${data.message || 'Şu anda kriterlere uygun bir ürün bulamadık.'}</p>
                         <button onclick="window.location.reload()"
                             class="mt-6 bg-primary text-white px-6 py-3 !rounded-button hover:bg-opacity-90 transition-all">
                             Tekrar Deneyin

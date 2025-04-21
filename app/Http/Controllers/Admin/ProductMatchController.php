@@ -99,6 +99,18 @@ class ProductMatchController extends Controller
             ->with('success', 'Ürün eşleştirmesi başarıyla silindi.');
     }
 
+    /**
+     * Delete all product matches
+     */
+    public function resetMatches()
+    {
+        // Delete all existing matches
+        ProductMatch::truncate();
+
+        return redirect()->route('admin.product-matches.index')
+            ->with('success', 'Tüm ürün eşleştirmeleri başarıyla silindi.');
+    }
+
     public function generateCombinations()
     {
         // Get all questions with their answers

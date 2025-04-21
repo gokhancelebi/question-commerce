@@ -97,29 +97,10 @@ class HomeController extends Controller
             ]);
         }
 
-        // If no match found, return a random product as fallback
-        $randomProduct = Product::where('is_active', true)
-            ->with('images')
-            ->inRandomOrder()
-            ->first();
-
-        if ($randomProduct) {
-            return response()->json([
-                'success' => true,
-                'products' => [[
-                    'id' => $randomProduct->id,
-                    'name' => $randomProduct->title,
-                    'price' => $randomProduct->price,
-                    'description' => $randomProduct->description,
-                    'image' => $randomProduct->featured_image ? asset($randomProduct->featured_image) :
-                        ($randomProduct->images->first() ? asset($randomProduct->images->first()->image_path) : null),
-                    'external_url' => $randomProduct->external_url,
-                ]]
-            ]);
-        }
-
+        // Return "no match found" response instead of random product
         return response()->json([
             'success' => false,
+            'message' => 'Üzgünüz, seçtiğiniz kriterlere uygun bir ürün bulamadık. Lütfen farklı seçenekler deneyin.',
             'products' => []
         ]);
     }

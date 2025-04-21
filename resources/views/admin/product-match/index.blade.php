@@ -11,6 +11,12 @@
                     <i class="fas fa-sync"></i> Kombinasyonları Oluştur
                 </button>
             </form>
+            <form action="{{ route('admin.product-matches.reset') }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-danger me-2" onclick="return confirm('Tüm eşleştirmeler silinecek. Bu işlem geri alınamaz. Onaylıyor musunuz?')">
+                    <i class="fas fa-trash"></i> Tüm Eşleştirmeleri Sil
+                </button>
+            </form>
             <a href="{{ route('admin.product-matches.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Yeni Eşleştirme
             </a>
@@ -103,4 +109,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

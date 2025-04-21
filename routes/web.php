@@ -84,6 +84,7 @@ Route::middleware([ AdminMiddleware::class])->prefix('admin')->name('admin.')->g
     // Product Matches
     Route::resource('product-matches', ProductMatchController::class);
     Route::post('product-matches/generate', [ProductMatchController::class, 'generateCombinations'])->name('product-matches.generate');
+    Route::post('product-matches/reset', [ProductMatchController::class, 'resetMatches'])->name('product-matches.reset');
 });
 
 // Front routes
