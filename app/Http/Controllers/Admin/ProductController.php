@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Models\ProductMatch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -163,6 +164,9 @@ class ProductController extends Controller
                 unlink(public_path($image->image_path));
             }
         }
+
+        // Delete related product matches
+        ProductMatch::where('product_id', $product->id)->delete();
 
         $product->delete();
 

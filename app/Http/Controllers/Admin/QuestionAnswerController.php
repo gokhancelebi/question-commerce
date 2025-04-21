@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Question;
 use App\Models\Answer;
+use App\Models\ProductMatch;
 use Illuminate\Http\Request;
 
 class QuestionAnswerController extends Controller
@@ -122,6 +123,31 @@ class QuestionAnswerController extends Controller
     public function destroy(string $id)
     {
         $question = Question::findOrFail($id);
+
+        // Get all answers for this question
+        $answerIds = $question->answers->pluck('id')->toArray();
+
+        // Delete product matches that contain any of these answers
+        if (!empty($answerIds)) {
+            $productMatches = ProductMatch::all();
+            foreach ($productMatches as $match) {
+                $combinationsArray = $match->answer_combinations;
+                $shouldDelete = false;
+
+                // Check if any of the question's answer IDs are in the combinations
+                foreach ($answerIds as $answerId) {
+                    if (in_array($answerId, $combinationsArray)) {
+                        $shouldDelete = true;
+                        break;
+                    }
+                }
+
+                if ($shouldDelete) {
+                    $match->delete();
+                }
+            }
+        }
+
         $question->delete();
 
         return redirect()->route('admin.questions.index')
