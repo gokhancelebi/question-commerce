@@ -84,12 +84,16 @@ class HomeController extends Controller
             $matchingProduct = [
                 'id' => $product->id,
                 'name' => $product->title,
-                'price' => $product->price,
                 'description' => $product->description,
                 'image' => $product->featured_image ? asset($product->featured_image) :
                     ($product->images->first() ? asset($product->images->first()->image_path) : null),
                 'external_url' => $product->external_url,
             ];
+
+            // Only include price if there's no external URL
+            if (!$product->external_url) {
+                $matchingProduct['price'] = $product->price;
+            }
 
             return response()->json([
                 'success' => true,

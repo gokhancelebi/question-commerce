@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="p-6">
                             <div class="flex justify-between items-start mb-4">
                                 <h4 class="text-xl font-bold">${bestMatch.name}</h4>
-                                <span class="text-xl font-bold text-primary">${Number(bestMatch.price).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} TL</span>
+                                ${!bestMatch.external_url ? `<span class="text-xl font-bold text-primary">${Number(bestMatch.price).toLocaleString('tr-TR', { minimumFractionDigits: 2 })} TL</span>` : ''}
                             </div>
                             <p class="text-gray-600 mb-6">${bestMatch.description || ''}</p>
                             <div class="flex flex-col sm:flex-row gap-4">
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <a href="${bestMatch.external_url}" target="_blank"
                                         class="bg-primary text-white px-6 py-3 !rounded-button hover:bg-opacity-90 transition-all flex-1 whitespace-nowrap flex items-center justify-center">
                                         <div class="w-5 h-5 mr-2 flex items-center justify-center">
-                                            <i class="ri-shopping-cart-line"></i>
+                                            <i class="ri-external-link-line"></i>
                                         </div>
                                         Satın Al
                                     </a>
@@ -391,8 +391,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const productId = addToCartBtn.getAttribute('data-product-id');
             const productName = productContainer.querySelector('h4.text-xl.font-bold').innerText;
-            const productPriceText = productContainer.querySelector('span.text-xl.font-bold.text-primary').innerText;
-            const productPrice = parseFloat(productPriceText.replace(/[^0-9,]/g, '').replace(',', '.'));
+
+            // Price element might not exist for external URL products
+            const priceElement = productContainer.querySelector('span.text-xl.font-bold.text-primary');
+            const productPrice = priceElement ?
+                parseFloat(priceElement.innerText.replace(/[^0-9,]/g, '').replace(',', '.')) : 0;
+
             const productImage = productContainer.querySelector('img').getAttribute('src');
             const productDescription = productContainer.querySelector('p.text-gray-600').innerText;
 
