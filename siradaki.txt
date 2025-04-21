@@ -6,3 +6,4 @@ smtp mail ve iletisim formu ayarlari
 sifre sifirlama ve uye olmada hatalar var
 siparis sonrasi stokdan dusme
 sepetteki urunu popupda silme
+iletisim sayfası testi
