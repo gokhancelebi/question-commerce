@@ -110,11 +110,13 @@
                     </div>
                 </div>
                 @else
-                <a href="{{ route('login', ['redirect_back' => url()->current()]) }}" class="text-gray-800 hover:text-primary">
-                    <div class="w-10 h-10 flex items-center justify-center">
-                        <i class="ri-user-line ri-lg"></i>
-                    </div>
-                </a>
+                <div class="hidden md:block">
+                    <a href="{{ route('login', ['redirect_back' => url()->current()]) }}" class="text-gray-800 hover:text-primary">
+                        <div class="w-10 h-10 flex items-center justify-center">
+                            <i class="ri-user-line ri-lg"></i>
+                        </div>
+                    </a>
+                </div>
                 @endauth
 
                 <a href="{{ route('cart.index') }}" id="cartButton" class="text-gray-800 hover:text-primary relative">
@@ -133,14 +135,14 @@
                     <a href="{{ route('register', ['redirect_back' => url()->current()]) }}"
                         class="text-gray-800 hover:text-primary transition-colors whitespace-nowrap">Kayıt</a>
                 </div>
-                <a href="{{ route('login', ['redirect_back' => url()->current()]) }}" class="text-gray-800 hover:text-primary md:hidden">
+                <a href="{{ route('login', ['redirect_back' => url()->current()]) }}" class="md:hidden text-gray-800 hover:text-primary">
                     <div class="w-10 h-10 flex items-center justify-center">
                         <i class="ri-user-line ri-lg"></i>
                     </div>
                 </a>
                 @endguest
 
-                <button class="md:hidden text-gray-800">
+                <button id="mobileMenuToggle" class="md:hidden text-gray-800">
                     <div class="w-10 h-10 flex items-center justify-center">
                         <i class="ri-menu-line ri-lg"></i>
                     </div>
@@ -148,9 +150,30 @@
             </div>
         </div>
     </header>
-   @yield('content')
 
-   @include('front.partials.footer')
+    <!-- Mobile Menu -->
+    <div id="mobileMenuContainer" class="fixed inset-0 z-40 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50" id="mobileMenuOverlay"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-64 bg-white shadow-lg transform transition-transform duration-300 translate-x-full" id="mobileMenuPanel">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 class="text-xl font-semibold">Menü</h3>
+                <button id="closeMobileMenu" class="text-gray-400 hover:text-gray-600">
+                    <i class="ri-close-line ri-lg"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <nav class="flex flex-col space-y-4">
+                    <a href="{{ route('home') }}" class="text-gray-800 hover:text-primary transition-colors py-2 border-b border-gray-100">Ana Sayfa</a>
+                    <a href="{{ route('pages.show', 'hakkimizda') }}" class="text-gray-800 hover:text-primary transition-colors py-2 border-b border-gray-100">Hakkımızda</a>
+                    <a href="{{ route('pages.show', 'iletisim') }}" class="text-gray-800 hover:text-primary transition-colors py-2 border-b border-gray-100">İletişim</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    @yield('content')
+
+    @include('front.partials.footer')
 
     @guest
     <!-- Modal HTML for login/register and cart -->
@@ -227,6 +250,47 @@
             const cartWithItemsState = document.getElementById('cartWithItemsState');
             const cartItems = document.getElementById('cartItems');
             const cartTotal = document.getElementById('cartTotal');
+
+            // Mobile menu functionality
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenuContainer = document.getElementById('mobileMenuContainer');
+            const mobileMenuPanel = document.getElementById('mobileMenuPanel');
+            const closeMobileMenu = document.getElementById('closeMobileMenu');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+
+            // Toggle mobile menu
+            if (mobileMenuToggle) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    // Check if the menu is already open
+                    if (mobileMenuContainer.classList.contains('hidden')) {
+                        // Open the menu
+                        mobileMenuContainer.classList.remove('hidden');
+                        // Use setTimeout to ensure the animation works
+                        setTimeout(() => {
+                            mobileMenuPanel.classList.remove('translate-x-full');
+                        }, 10);
+                    } else {
+                        // Close the menu
+                        closeMobileMenuHandler();
+                    }
+                });
+            }
+
+            // Close mobile menu
+            const closeMobileMenuHandler = function() {
+                mobileMenuPanel.classList.add('translate-x-full');
+                setTimeout(() => {
+                    mobileMenuContainer.classList.add('hidden');
+                }, 300); // Match the duration in the CSS
+            };
+
+            if (closeMobileMenu) {
+                closeMobileMenu.addEventListener('click', closeMobileMenuHandler);
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', closeMobileMenuHandler);
+            }
 
             // Open cart modal
             if (cartButton) {
