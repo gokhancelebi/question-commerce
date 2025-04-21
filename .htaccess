@@ -1,0 +1,70 @@
+# Disable directory listing
+Options -Indexes
+
+# Handle Authorization Header
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+# Redirect to HTTPS (uncomment if SSL is enabled)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+RewriteEngine On
+RewriteRule ^(.*)$ public/$1 [L]
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+
+    # Prevent Direct Access to sensitive files
+    RewriteRule ^(.env|composer.json|package.json|webpack.mix.js|yarn.lock|README.md|composer.lock) - [F,L,NC]
+
+    # Prevent Direct Access to storage, bootstrap/cache directories
+    RewriteRule ^(storage|bootstrap/cache)/.* - [F,L,NC]
+</IfModule>
+
+# Disable access to sensitive files
+<FilesMatch "^\.env|composer\.json|composer\.lock|package\.json|package-lock\.json|yarn\.lock|README\.md|phpunit\.xml|webpack\.mix\.js">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Cache Control for static assets (1 month)
+    <FilesMatch "\.(ico|jpg|jpeg|png|gif|css|js|woff2|svg)$">
+        Header set Cache-Control "public, max-age=2592000"
+    </FilesMatch>
+</IfModule>
+
+# Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/x-javascript application/json
+
+    # Remove browser bugs
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+    Header append Vary User-Agent
+</IfModule>
+
+# PHP Settings
+<IfModule mod_php8.c>
+    php_value upload_max_filesize 12M
+    php_value post_max_size 12M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
