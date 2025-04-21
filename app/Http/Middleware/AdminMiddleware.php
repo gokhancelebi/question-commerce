@@ -18,7 +18,7 @@ class AdminMiddleware
             if ($request->expectsJson()) {
                 return response()->json(['error' => 'Unauthorized. Admin access required.'], 403);
             }
-            return redirect()->route('home')->with('error', 'Bu sayfaya erişim yetkiniz bulunmamaktadır.');
+            return redirect()->route('login', ['redirect_back' => $request->url()])->with('error', 'Bu sayfaya erişim yetkiniz bulunmamaktadır.');
         }
 
         return $next($request);
